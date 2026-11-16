@@ -1,0 +1,2213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Author vs. AI: Visual Literature Lab</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Playfair Display for academic elegance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: {
+              950: '#091324',
+              900: '#0F1E36',
+              800: '#1B365D',
+              700: '#27497A',
+              100: '#E6ECF5',
+            },
+            parchment: {
+              50: '#FCFBF8',
+              100: '#F6F3EB',
+              200: '#EDE8DC',
+              300: '#DFD7C5',
+            },
+            gold: {
+              500: '#D97706',
+              600: '#B45309',
+              100: '#FEF3C7',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Animations & Academic Styling */
+    body {
+      background-color: #F6F3EB;
+      color: #0F1E36;
+      overflow-x: hidden;
+    }
+
+    .serif-title {
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* Dice Roll Animation */
+    @keyframes diceShake {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      20% { transform: rotate(-18deg) scale(1.1); }
+      40% { transform: rotate(18deg) scale(1.15); }
+      60% { transform: rotate(-12deg) scale(1.1); }
+      80% { transform: rotate(12deg) scale(1.05); }
+    }
+    .dice-rolling {
+      animation: diceShake 0.6s ease-in-out;
+    }
+
+    /* Smooth Fade Transition */
+    .fade-in {
+      animation: fadeIn 0.35s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Board Game Token Pulse */
+    @keyframes tokenBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .token-active {
+      animation: tokenBounce 1.4s infinite ease-in-out;
+    }
+
+    /* Print styles for Lab Report */
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #FFFFFF !important; }
+      .print-shadow-none { box-shadow: none !important; border: 1px solid #CBD5E1 !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-navy-800 selection:text-white">
+
+  <!-- ==================== TOP NAVIGATION BAR ==================== -->
+  <header class="bg-navy-900 text-white shadow-md sticky top-0 z-40 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <button onclick="switchMainView('home')" class="flex items-center gap-3 text-left group focus:outline-none">
+        <div class="w-10 h-10 rounded-xl bg-navy-800 border border-navy-700 flex items-center justify-center text-gold-500 shadow-inner group-hover:border-gold-500 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        </div>
+        <div>
+          <span class="font-bold tracking-wider text-sm sm:text-base block leading-tight">AUTHOR vs. AI</span>
+          <span class="text-[11px] uppercase tracking-widest text-parchment-300 block">Visual Literature Lab</span>
+        </div>
+      </button>
+
+      <!-- Main Navigation Tabs -->
+      <nav class="hidden md:flex items-center gap-2 bg-navy-950/60 p-1 rounded-xl border border-navy-800">
+        <button id="nav-home" onclick="switchMainView('home')" class="px-4 py-1.5 rounded-lg text-sm font-medium transition">
+          <span data-i18n="nav_home">Главная</span>
+        </button>
+        <button id="nav-lab" onclick="switchMainView('lab')" class="px-4 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1.5">
+          <span>🔬</span> <span data-i18n="nav_lab">Лаборатория (5 шагов)</span>
+        </button>
+        <button id="nav-game" onclick="switchMainView('game')" class="px-4 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1.5">
+          <span>🎲</span> <span data-i18n="nav_game">Настольная игра</span>
+        </button>
+        <button id="nav-about" onclick="switchMainView('about')" class="px-4 py-1.5 rounded-lg text-sm font-medium transition">
+          <span data-i18n="nav_about">О проекте</span>
+        </button>
+      </nav>
+
+      <!-- Language Toggle & Mobile Menu Button -->
+      <div class="flex items-center gap-2">
+        <div class="bg-navy-950 p-1 rounded-xl border border-navy-800 flex items-center text-xs font-semibold">
+          <button id="lang-ru" onclick="setLanguage('ru')" class="px-2.5 py-1 rounded-lg transition">RU</button>
+          <button id="lang-en" onclick="setLanguage('en')" class="px-2.5 py-1 rounded-lg transition">EN</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Bar -->
+    <div class="md:hidden border-t border-navy-800 bg-navy-950 px-2 py-2 flex justify-around text-xs font-medium">
+      <button onclick="switchMainView('home')" class="px-2 py-1 rounded text-parchment-100 hover:bg-navy-800" data-i18n="nav_home">Главная</button>
+      <button onclick="switchMainView('lab')" class="px-2 py-1 rounded text-parchment-100 hover:bg-navy-800" data-i18n="nav_lab_short">Лаборатория</button>
+      <button onclick="switchMainView('game')" class="px-2 py-1 rounded text-parchment-100 hover:bg-navy-800" data-i18n="nav_game_short">Игра</button>
+      <button onclick="switchMainView('about')" class="px-2 py-1 rounded text-parchment-100 hover:bg-navy-800" data-i18n="nav_about">О проекте</button>
+    </div>
+  </header>
+
+  <!-- Toast Notification Banner (Replaces alert()) -->
+  <div id="toast-banner" class="fixed bottom-5 right-5 z-50 hidden max-w-sm bg-navy-900 text-white border border-gold-500/50 shadow-2xl rounded-2xl px-4 py-3 flex items-center gap-3 fade-in">
+    <span id="toast-icon" class="text-xl">✨</span>
+    <p id="toast-message" class="text-sm font-medium"></p>
+  </div>
+
+  <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
+  <main class="flex-1">
+
+    <!-- ============================================================ -->
+    <!-- 1. LANDING / HERO SECTION                                    -->
+    <!-- ============================================================ -->
+    <section id="view-home" class="fade-in">
+      <!-- Hero Banner -->
+      <div class="bg-navy-900 text-white border-b border-navy-800 relative overflow-hidden">
+        <!-- Subtle decorative geometric grid -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#EDE8DC 1px, transparent 1px); background-size: 24px 24px;"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 relative z-10">
+          <div class="grid lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-7 space-y-6">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-navy-800 border border-navy-700 text-gold-500 text-xs font-bold tracking-widest uppercase">
+                <span>READ</span> • <span>IMAGINE</span> • <span>GENERATE</span> • <span>COMPARE</span>
+              </div>
+              
+              <h1 class="serif-title text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-white">
+                AUTHOR <span class="text-gold-500 italic">vs.</span> AI
+                <span class="block text-2xl sm:text-3xl font-sans font-light text-parchment-200 mt-2">
+                  Visual Literature Lab
+                </span>
+              </h1>
+              
+              <p class="text-lg sm:text-xl text-parchment-200 max-w-2xl leading-relaxed" data-i18n="hero_subtitle">
+                Может ли искусственный интеллект по-настоящему передать художественный мир писателя? Читайте отрывки, визуализируйте образы, создавайте промпты и проверяйте ИИ на точность.
+              </p>
+
+              <!-- Primary Action Buttons -->
+              <div class="flex flex-wrap gap-4 pt-2">
+                <button onclick="switchMainView('lab')" class="px-6 py-3.5 rounded-xl bg-gold-500 hover:bg-gold-600 text-white font-semibold shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                  <span>🔬</span>
+                  <span data-i18n="btn_start_lab">Начать лабораторию (5 шагов)</span>
+                </button>
+                <button onclick="switchMainView('game')" class="px-6 py-3.5 rounded-xl bg-white hover:bg-parchment-100 text-navy-900 font-semibold shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                  <span>🎲</span>
+                  <span data-i18n="btn_start_game">Играть в настольную игру</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Interactive Hero Preview Card (Split Author vs AI Visual) -->
+            <div class="lg:col-span-5">
+              <div class="bg-parchment-100 text-navy-900 rounded-2xl p-5 shadow-2xl border border-parchment-300">
+                <div class="flex items-center justify-between border-b border-parchment-300 pb-3 mb-4">
+                  <span class="text-xs font-bold uppercase tracking-wider text-navy-700" data-i18n="hero_card_label">Исследовательская модель</span>
+                  <span class="text-xs bg-navy-900 text-white px-2.5 py-0.5 rounded-full font-medium">3 книги • 5 этапов</span>
+                </div>
+                
+                <!-- Mini SVG Illustration comparing Book & AI -->
+                <div class="rounded-xl overflow-hidden border border-parchment-300 bg-navy-950 mb-4">
+                  <svg viewBox="0 0 400 200" class="w-full h-auto block">
+                    <!-- Left: Author's Literary World -->
+                    <rect x="0" y="0" width="200" height="200" fill="#1B365D"/>
+                    <circle cx="100" cy="85" r="45" fill="#F6F3EB" opacity="0.12"/>
+                    <!-- Open Book SVG -->
+                    <path d="M45 125 Q100 110 100 135 Q100 110 155 125 L155 75 Q100 60 100 85 Q100 60 45 75 Z" fill="#F6F3EB" stroke="#D97706" stroke-width="2"/>
+                    <line x1="100" y1="85" x2="100" y2="135" stroke="#0F1E36" stroke-width="1.5"/>
+                    <text x="100" y="162" fill="#F6F3EB" font-size="11" font-weight="bold" text-anchor="middle" font-family="Inter">AUTHOR'S TEXT</text>
+                    <text x="100" y="178" fill="#DFD7C5" font-size="9" text-anchor="middle" font-family="Inter">Imagination &amp; Subtext</text>
+                    
+                    <!-- Center Divider -->
+                    <line x1="200" y1="15" x2="200" y2="185" stroke="#D97706" stroke-width="2" stroke-dasharray="4 4"/>
+                    <circle cx="200" cy="100" r="16" fill="#D97706"/>
+                    <text x="200" y="104" fill="#FFFFFF" font-size="10" font-weight="bold" text-anchor="middle" font-family="Inter">VS</text>
+
+                    <!-- Right: AI Visual Interpretation -->
+                    <rect x="200" y="0" width="200" height="200" fill="#0F1E36"/>
+                    <!-- Planet / Rooftop / Jungle stylized nodes -->
+                    <circle cx="300" cy="95" r="36" fill="none" stroke="#38BDF8" stroke-width="1.5" stroke-dasharray="3 3"/>
+                    <circle cx="300" cy="95" r="24" fill="#D97706" opacity="0.85"/>
+                    <polygon points="292,73 300,56 308,73" fill="#F6F3EB"/>
+                    <circle cx="332" cy="68" r="4" fill="#38BDF8"/>
+                    <circle cx="268" cy="118" r="3" fill="#F6F3EB"/>
+                    <text x="300" y="162" fill="#38BDF8" font-size="11" font-weight="bold" text-anchor="middle" font-family="Inter">AI GENERATION</text>
+                    <text x="300" y="178" fill="#DFD7C5" font-size="9" text-anchor="middle" font-family="Inter">Pixels &amp; Prompts</text>
+                  </svg>
+                </div>
+
+                <blockquote class="italic text-sm text-navy-800 border-l-4 border-gold-500 pl-3 py-1 bg-white/70 rounded-r-lg">
+                  «AI can create an image, but can it understand literature? Our project explores the difference between reading, imagining and generating.»
+                </blockquote>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 Sections Overview Cards (Matching the Project Architecture) -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div class="text-center max-w-3xl mx-auto mb-10">
+          <h2 class="serif-title text-3xl font-bold text-navy-900" data-i18n="steps_heading">Пять шагов исследования текста</h2>
+          <p class="text-navy-700 mt-2" data-i18n="steps_subheading">Нажмите на любой этап, чтобы перейти непосредственно к работе в интерактивной лаборатории.</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
+          <!-- Step 01 -->
+          <div onclick="openLabStep(1)" class="cursor-pointer bg-white rounded-2xl p-5 border border-parchment-300 shadow-sm hover:shadow-md hover:border-navy-800 transition group flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-extrabold tracking-widest text-gold-600 uppercase">01 • READ</span>
+                <span class="w-8 h-8 rounded-lg bg-navy-100 text-navy-900 flex items-center justify-center font-bold group-hover:bg-navy-900 group-hover:text-white transition">📖</span>
+              </div>
+              <h3 class="font-bold text-lg text-navy-900 mb-2" data-i18n="step1_title">Choose a Literary Text</h3>
+              <p class="text-sm text-navy-700 leading-relaxed" data-i18n="step1_desc">Выбор произведения или отрывка, внимательное чтение и знакомство с авторским описанием.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-parchment-200 text-xs font-semibold text-navy-800 group-hover:text-gold-600 flex items-center justify-between">
+              <span data-i18n="open_step">Открыть этап</span> <span>→</span>
+            </div>
+          </div>
+
+          <!-- Step 02 -->
+          <div onclick="openLabStep(2)" class="cursor-pointer bg-white rounded-2xl p-5 border border-parchment-300 shadow-sm hover:shadow-md hover:border-navy-800 transition group flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-extrabold tracking-widest text-gold-600 uppercase">02 • THINK</span>
+                <span class="w-8 h-8 rounded-lg bg-navy-100 text-navy-900 flex items-center justify-center font-bold group-hover:bg-navy-900 group-hover:text-white transition">💭</span>
+              </div>
+              <h3 class="font-bold text-lg text-navy-900 mb-2" data-i18n="step2_title">Imagine</h3>
+              <p class="text-sm text-navy-700 leading-relaxed" data-i18n="step2_desc">Ученик фиксирует, каким он представляет героя, место, цвета и атмосферу сцены до запуска ИИ.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-parchment-200 text-xs font-semibold text-navy-800 group-hover:text-gold-600 flex items-center justify-between">
+              <span data-i18n="open_step">Открыть этап</span> <span>→</span>
+            </div>
+          </div>
+
+          <!-- Step 03 -->
+          <div onclick="openLabStep(3)" class="cursor-pointer bg-white rounded-2xl p-5 border border-parchment-300 shadow-sm hover:shadow-md hover:border-navy-800 transition group flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-extrabold tracking-widest text-gold-600 uppercase">03 • CREATE</span>
+                <span class="w-8 h-8 rounded-lg bg-navy-100 text-navy-900 flex items-center justify-center font-bold group-hover:bg-navy-900 group-hover:text-white transition">🎨</span>
+              </div>
+              <h3 class="font-bold text-lg text-navy-900 mb-2" data-i18n="step3_title">Generate with AI</h3>
+              <p class="text-sm text-navy-700 leading-relaxed" data-i18n="step3_desc">Составление эффективного промпта на английском языке и генерация визуальной интерпретации.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-parchment-200 text-xs font-semibold text-navy-800 group-hover:text-gold-600 flex items-center justify-between">
+              <span data-i18n="open_step">Открыть этап</span> <span>→</span>
+            </div>
+          </div>
+
+          <!-- Step 04 -->
+          <div onclick="openLabStep(4)" class="cursor-pointer bg-white rounded-2xl p-5 border border-parchment-300 shadow-sm hover:shadow-md hover:border-navy-800 transition group flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-extrabold tracking-widest text-gold-600 uppercase">04 • ANALYSE</span>
+                <span class="w-8 h-8 rounded-lg bg-navy-100 text-navy-900 flex items-center justify-center font-bold group-hover:bg-navy-900 group-hover:text-white transition">🔍</span>
+              </div>
+              <h3 class="font-bold text-lg text-navy-900 mb-2" data-i18n="step4_title">Compare</h3>
+              <p class="text-sm text-navy-700 leading-relaxed" data-i18n="step4_desc">Сопоставление авторского текста, собственного воображения и деталей, добавленных или упущенных ИИ.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-parchment-200 text-xs font-semibold text-navy-800 group-hover:text-gold-600 flex items-center justify-between">
+              <span data-i18n="open_step">Открыть этап</span> <span>→</span>
+            </div>
+          </div>
+
+          <!-- Step 05 -->
+          <div onclick="openLabStep(5)" class="cursor-pointer bg-white rounded-2xl p-5 border border-parchment-300 shadow-sm hover:shadow-md hover:border-navy-800 transition group flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-extrabold tracking-widest text-gold-600 uppercase">05 • REFLECT</span>
+                <span class="w-8 h-8 rounded-lg bg-navy-100 text-navy-900 flex items-center justify-center font-bold group-hover:bg-navy-900 group-hover:text-white transition">⚖️</span>
+              </div>
+              <h3 class="font-bold text-lg text-navy-900 mb-2" data-i18n="step5_title">Reflect &amp; Rubric</h3>
+              <p class="text-sm text-navy-700 leading-relaxed" data-i18n="step5_desc">Оценка по 5 критериям (Accuracy, Details, Creativity, Emotions, Message) и формулирование вывода.</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-parchment-200 text-xs font-semibold text-navy-800 group-hover:text-gold-600 flex items-center justify-between">
+              <span data-i18n="open_step">Открыть этап</span> <span>→</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured Board Game Callout Banner -->
+        <div class="mt-12 bg-navy-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-navy-800 flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div class="space-y-2 max-w-2xl">
+            <div class="inline-block px-3 py-1 rounded-full bg-gold-500/20 text-gold-500 text-xs font-bold uppercase tracking-wider">
+              Interactive Board Game Mode
+            </div>
+            <h3 class="serif-title text-2xl sm:text-3xl font-bold" data-i18n="game_banner_title">
+              Литературный квест-ходилка: Author vs. AI Challenge
+            </h3>
+            <p class="text-parchment-200 text-sm sm:text-base" data-i18n="game_banner_desc">
+              Пройдите игровое поле по мотивам книг «Крышеходы» (The Rooftoppers Challenge), «Исследователь» (The Amazon Challenge) Кэтрин Ранделл или «Маленький принц». Бросайте кубик, поднимайтесь по лестницам знаний и разоблачайте галлюцинации ИИ!
+            </p>
+          </div>
+          <button onclick="switchMainView('game')" class="shrink-0 px-6 py-3.5 rounded-xl bg-gold-500 hover:bg-gold-600 text-white font-bold shadow-lg transition flex items-center gap-2">
+            <span>🎲</span>
+            <span data-i18n="btn_launch_board">Запустить игровое поле</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 2. VISUAL LITERATURE LAB (5-STEP WORKFLOW)                   -->
+    <!-- ============================================================ -->
+    <section id="view-lab" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 fade-in">
+      <!-- Lab Header & Book Selector -->
+      <div class="bg-white rounded-2xl p-5 sm:p-6 border border-parchment-300 shadow-sm mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-gold-600">Visual Literature Lab</span>
+          <h2 class="serif-title text-2xl sm:text-3xl font-bold text-navy-900" data-i18n="lab_workspace_title">Рабочая лаборатория анализа текста</h2>
+        </div>
+
+        <!-- Book Selector Dropdown / Pills -->
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs font-semibold text-navy-700 mr-1" data-i18n="select_book_label">Произведение:</span>
+          <button onclick="selectLabBook('little_prince')" id="book-btn-little_prince" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition">
+            🌹 The Little Prince
+          </button>
+          <button onclick="selectLabBook('rooftoppers')" id="book-btn-rooftoppers" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition">
+            🎻 Rooftoppers (Paris)
+          </button>
+          <button onclick="selectLabBook('amazon')" id="book-btn-amazon" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition">
+            🌿 The Explorer (Amazon)
+          </button>
+        </div>
+      </div>
+
+      <!-- 5-Step Progress Stepper -->
+      <div class="grid grid-cols-5 gap-2 sm:gap-3 mb-8 no-print">
+        <button onclick="openLabStep(1)" id="stepper-1" class="p-3 rounded-xl border text-left transition flex flex-col sm:flex-row sm:items-center gap-2">
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0">01</span>
+          <span class="text-xs sm:text-sm font-bold truncate">Read</span>
+        </button>
+        <button onclick="openLabStep(2)" id="stepper-2" class="p-3 rounded-xl border text-left transition flex flex-col sm:flex-row sm:items-center gap-2">
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0">02</span>
+          <span class="text-xs sm:text-sm font-bold truncate">Imagine</span>
+        </button>
+        <button onclick="openLabStep(3)" id="stepper-3" class="p-3 rounded-xl border text-left transition flex flex-col sm:flex-row sm:items-center gap-2">
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0">03</span>
+          <span class="text-xs sm:text-sm font-bold truncate">Create</span>
+        </button>
+        <button onclick="openLabStep(4)" id="stepper-4" class="p-3 rounded-xl border text-left transition flex flex-col sm:flex-row sm:items-center gap-2">
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0">04</span>
+          <span class="text-xs sm:text-sm font-bold truncate">Compare</span>
+        </button>
+        <button onclick="openLabStep(5)" id="stepper-5" class="p-3 rounded-xl border text-left transition flex flex-col sm:flex-row sm:items-center gap-2">
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0">05</span>
+          <span class="text-xs sm:text-sm font-bold truncate">Reflect</span>
+        </button>
+      </div>
+
+      <!-- STEP 01: READ -->
+      <div id="lab-step-1" class="lab-step-panel bg-white rounded-2xl p-6 sm:p-8 border border-parchment-300 shadow-sm fade-in">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-parchment-200 pb-4 mb-6">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-gold-600">Step 01 • Read &amp; Close Analysis</span>
+            <h3 id="lab-book-title" class="serif-title text-2xl font-bold text-navy-900 mt-1">The Little Prince — Antoine de Saint-Exupéry</h3>
+          </div>
+          <span id="lab-book-chapter" class="px-3 py-1 rounded-full bg-parchment-100 border border-parchment-300 text-xs font-semibold text-navy-800">Chapter IV &amp; VI</span>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8">
+          <div class="lg:col-span-7 space-y-5">
+            <div class="bg-parchment-100 rounded-2xl p-6 border border-parchment-300 relative">
+              <span class="text-xs font-bold uppercase tracking-wider text-navy-700 block mb-2">Original Literary Excerpt (English):</span>
+              <p id="lab-excerpt-en" class="serif-title text-lg sm:text-xl leading-relaxed text-navy-950"></p>
+            </div>
+
+            <div class="bg-navy-100/50 rounded-2xl p-5 border border-navy-100">
+              <span class="text-xs font-bold uppercase tracking-wider text-navy-800 block mb-1.5">Перевод и художественный контекст (RU):</span>
+              <p id="lab-excerpt-ru" class="text-sm sm:text-base leading-relaxed text-navy-800"></p>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 space-y-4">
+            <div class="bg-navy-900 text-white rounded-2xl p-5">
+              <h4 class="font-bold text-base mb-3 flex items-center gap-2 text-gold-500">
+                <span>🔍</span> <span data-i18n="key_details_title">Ключевые художественные детали автора</span>
+              </h4>
+              <ul id="lab-key-details" class="space-y-2.5 text-sm text-parchment-100"></ul>
+            </div>
+
+            <div class="bg-parchment-50 rounded-2xl p-5 border border-parchment-300">
+              <h4 class="font-bold text-sm text-navy-900 mb-2" data-i18n="teacher_tip_title">Методическая подсказка:</h4>
+              <p class="text-xs sm:text-sm text-navy-700 leading-relaxed" data-i18n="teacher_tip_text">
+                Обратите внимание не только на предметы (вулканы, крыши, лианы), но и на настроение, масштаб и символику. Именно эмоциональный подтекст чаще всего теряется при генерации ИИ.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 pt-5 border-t border-parchment-200 flex justify-end">
+          <button onclick="openLabStep(2)" class="px-6 py-3 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-semibold transition flex items-center gap-2">
+            <span data-i18n="next_imagine">Перейти к шагу 02: Imagine</span> <span>→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 02: IMAGINE -->
+      <div id="lab-step-2" class="lab-step-panel hidden bg-white rounded-2xl p-6 sm:p-8 border border-parchment-300 shadow-sm fade-in">
+        <div class="border-b border-parchment-200 pb-4 mb-6">
+          <span class="text-xs font-bold uppercase tracking-widest text-gold-600">Step 02 • Mental Visualization</span>
+          <h3 class="serif-title text-2xl font-bold text-navy-900 mt-1" data-i18n="imagine_heading">Зафиксируйте свой мысленный образ до встречи с ИИ</h3>
+          <p class="text-sm text-navy-700 mt-1" data-i18n="imagine_sub">Ответьте на 4 вопроса на английском или русском языке. Ваши ответы сохраняются автоматически.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-navy-900">1. What does the place or character look like? <span class="text-navy-700 font-normal">(Как выглядит место или герой?)</span></label>
+            <textarea id="input-imagine-look" rows="3" oninput="saveLabProgress()" class="w-full rounded-xl border border-parchment-300 bg-parchment-50 p-3.5 text-sm focus:outline-none focus:border-navy-800 focus:bg-white transition" placeholder="Describe shapes, scale, posture, architecture..."></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-navy-900">2. What colours and lighting can you imagine? <span class="text-navy-700 font-normal">(Какие цвета и свет вы представляете?)</span></label>
+            <textarea id="input-imagine-colours" rows="3" oninput="saveLabProgress()" class="w-full rounded-xl border border-parchment-300 bg-parchment-50 p-3.5 text-sm focus:outline-none focus:border-navy-800 focus:bg-white transition" placeholder="Warm sunset gold, deep twilight blue, emerald shadows..."></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-navy-900">3. What specific objects can you see? <span class="text-navy-700 font-normal">(Какие важные детали и предметы видны?)</span></label>
+            <textarea id="input-imagine-objects" rows="3" oninput="saveLabProgress()" class="w-full rounded-xl border border-parchment-300 bg-parchment-50 p-3.5 text-sm focus:outline-none focus:border-navy-800 focus:bg-white transition" placeholder="Three tiny volcanoes, a single rose, a cello case, ancient stone ruins..."></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-navy-900">4. What is the emotional mood of the scene? <span class="text-navy-700 font-normal">(Какое настроение и атмосфера сцены?)</span></label>
+            <textarea id="input-imagine-mood" rows="3" oninput="saveLabProgress()" class="w-full rounded-xl border border-parchment-300 bg-parchment-50 p-3.5 text-sm focus:outline-none focus:border-navy-800 focus:bg-white transition" placeholder="Peaceful, melancholic, adventurous, fragile, mysterious..."></textarea>
+          </div>
+        </div>
+
+        <div class="mt-8 pt-5 border-t border-parchment-200 flex flex-wrap justify-between gap-3">
+          <button onclick="openLabStep(1)" class="px-5 py-2.5 rounded-xl border border-parchment-300 hover:bg-parchment-100 text-navy-900 font-semibold transition">
+            ← <span data-i18n="prev_step">Назад</span>
+          </button>
+          <button onclick="openLabStep(3)" class="px-6 py-3 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-semibold transition flex items-center gap-2">
+            <span data-i18n="next_create">Перейти к шагу 03: Create with AI</span> <span>→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 03: CREATE WITH AI -->
+      <div id="lab-step-3" class="lab-step-panel hidden bg-white rounded-2xl p-6 sm:p-8 border border-parchment-300 shadow-sm fade-in">
+        <div class="border-b border-parchment-200 pb-4 mb-6">
+          <span class="text-xs font-bold uppercase tracking-widest text-gold-600">Step 03 • Prompt Engineering &amp; AI Synthesis</span>
+          <h3 class="serif-title text-2xl font-bold text-navy-900 mt-1" data-i18n="create_heading">Создайте промпт для ИИ и сгенерируйте иллюстрацию</h3>
+          <p class="text-sm text-navy-700 mt-1" data-i18n="create_sub">Сформулируйте запрос на английском языке, добавьте художественный стиль и посмотрите, как нейросеть интерпретирует текст.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8 items-start">
+          <!-- Prompt Builder Left -->
+          <div class="lg:col-span-6 space-y-5">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-sm font-bold text-navy-900">Your AI Image Prompt (English):</label>
+                <button onclick="fillExamplePrompt()" class="text-xs font-semibold text-gold-600 hover:underline" data-i18n="btn_fill_example">
+                  Вставить образец промпта
+                </button>
+              </div>
+              <textarea id="input-ai-prompt" rows="4" oninput="saveLabProgress()" class="w-full rounded-xl border border-parchment-300 bg-parchment-50 p-4 text-sm font-medium text-navy-950 focus:outline-none focus:border-navy-800 focus:bg-white transition" placeholder="Create an illustration of..."></textarea>
+            </div>
+
+            <!-- Style & Atmosphere Chips -->
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-navy-700 block mb-2" data-i18n="prompt_chips_label">Добавить детали стиля в промпт:</span>
+              <div class="flex flex-wrap gap-2">
+                <button onclick="appendPromptTag('soft watercolour style')" class="px-3 py-1.5 rounded-lg bg-parchment-100 hover:bg-navy-100 border border-parchment-300 text-xs font-medium text-navy-900 transition">+ soft watercolour style</button>
+                <button onclick="appendPromptTag('peaceful and magical atmosphere')" class="px-3 py-1.5 rounded-lg bg-parchment-100 hover:bg-navy-100 border border-parchment-300 text-xs font-medium text-navy-900 transition">+ magical atmosphere</button>
+                <button onclick="appendPromptTag('golden hour sunset lighting')" class="px-3 py-1.5 rounded-lg bg-parchment-100 hover:bg-navy-100 border border-parchment-300 text-xs font-medium text-navy-900 transition">+ sunset lighting</button>
+                <button onclick="appendPromptTag('book illustration aesthetic, intricate details')" class="px-3 py-1.5 rounded-lg bg-parchment-100 hover:bg-navy-100 border border-parchment-300 text-xs font-medium text-navy-900 transition">+ book illustration</button>
+                <button onclick="appendPromptTag('dramatic twilight sky')" class="px-3 py-1.5 rounded-lg bg-parchment-100 hover:bg-navy-100 border border-parchment-300 text-xs font-medium text-navy-900 transition">+ twilight sky</button>
+              </div>
+            </div>
+
+            <!-- Action Buttons: Generate & Copy -->
+            <div class="flex flex-wrap gap-3 pt-2">
+              <button onclick="generateLabVisual()" class="flex-1 min-w-[200px] px-5 py-3.5 rounded-xl bg-gold-500 hover:bg-gold-600 text-white font-bold shadow-md transition flex items-center justify-center gap-2">
+                <span>✨</span> <span data-i18n="btn_generate_ai">Сгенерировать образ ИИ</span>
+              </button>
+              <button onclick="copyPromptToClipboard()" class="px-4 py-3.5 rounded-xl bg-navy-100 hover:bg-navy-200 text-navy-900 font-semibold text-sm transition flex items-center gap-2" title="Copy prompt for Microsoft Designer / Midjourney">
+                <span>📋</span> <span data-i18n="btn_copy_prompt">Copy prompt</span>
+              </button>
+            </div>
+
+            <!-- AI Token Parser Explanation -->
+            <div id="ai-parser-box" class="bg-navy-950 text-parchment-100 rounded-xl p-4 text-xs space-y-1.5 border border-navy-800">
+              <div class="font-bold text-gold-500 uppercase tracking-wider">AI Prompt Analyzer:</div>
+              <p id="ai-parser-status" class="text-parchment-200">Нажмите «Сгенерировать образ ИИ», чтобы увидеть, какие ключевые слова распознала модель и какие художественные допущения она сделала.</p>
+            </div>
+          </div>
+
+          <!-- AI Rendered Canvas Right -->
+          <div class="lg:col-span-6">
+            <div class="bg-parchment-100 rounded-2xl p-4 border border-parchment-300">
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-navy-800">AI Visual Output (Simulated Studio)</span>
+                <span id="ai-render-badge" class="text-[11px] px-2.5 py-0.5 rounded-full bg-navy-900 text-white font-medium">Ready</span>
+              </div>
+              <div class="rounded-xl overflow-hidden border border-parchment-300 bg-navy-950 shadow-inner aspect-[4/3] relative">
+                <canvas id="lab-ai-canvas" class="w-full h-full block"></canvas>
+              </div>
+              <p class="text-[11px] text-navy-700 mt-2.5 text-center" data-i18n="canvas_caption">
+                ИИ-визуализация строится на основе вашего промпта и демонстрирует типичные особенности нейросетевой интерпретации.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 pt-5 border-t border-parchment-200 flex flex-wrap justify-between gap-3">
+          <button onclick="openLabStep(2)" class="px-5 py-2.5 rounded-xl border border-parchment-300 hover:bg-parchment-100 text-navy-900 font-semibold transition">
+            ← <span data-i18n="prev_step">Назад</span>
+          </button>
+          <button onclick="openLabStep(4)" class="px-6 py-3 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-semibold transition flex items-center gap-2">
+            <span data-i18n="next_compare">Перейти к шагу 04: Compare</span> <span>→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 04: COMPARE -->
+      <div id="lab-step-4" class="lab-step-panel hidden bg-white rounded-2xl p-6 sm:p-8 border border-parchment-300 shadow-sm fade-in">
+        <div class="border-b border-parchment-200 pb-4 mb-6">
+          <span class="text-xs font-bold uppercase tracking-widest text-gold-600">Step 04 • Side-by-Side Critical Comparison</span>
+          <h3 class="serif-title text-2xl font-bold text-navy-900 mt-1" data-i18n="compare_heading">Сравнение: Замысел автора vs. Визуализация ИИ</h3>
+        </div>
+
+        <!-- Side by Side Panel -->
+        <div class="grid lg:grid-cols-2 gap-6 mb-8">
+          <!-- Left: Author & Student -->
+          <div class="bg-parchment-100 rounded-2xl p-5 border border-parchment-300 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-navy-900 text-white text-xs font-bold uppercase">Perspective A: Author &amp; Reader</span>
+              <span class="text-xs font-semibold text-navy-700">Textual World</span>
+            </div>
+            <div class="bg-white rounded-xl p-4 border border-parchment-200">
+              <div class="text-xs font-bold text-navy-700 uppercase mb-1">Отрывок произведения:</div>
+              <p id="compare-excerpt-text" class="serif-title text-sm sm:text-base text-navy-950 leading-relaxed"></p>
+            </div>
+            <div class="bg-white rounded-xl p-4 border border-parchment-200 space-y-2">
+              <div class="text-xs font-bold text-gold-600 uppercase">Ваше воображение (из Шага 02):</div>
+              <p id="compare-student-notes" class="text-xs sm:text-sm text-navy-800 italic">Вы ещё не заполнили заметки на Шаге 02.</p>
+            </div>
+          </div>
+
+          <!-- Right: AI Interpretation -->
+          <div class="bg-navy-950 text-white rounded-2xl p-5 border border-navy-800 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-1 rounded-lg bg-gold-500 text-white text-xs font-bold uppercase">Perspective B: AI Image</span>
+              <span class="text-xs font-semibold text-parchment-300">Algorithmic Output</span>
+            </div>
+            <div class="rounded-xl overflow-hidden border border-navy-700 aspect-[16/10] bg-navy-900">
+              <canvas id="compare-ai-canvas" class="w-full h-full block"></canvas>
+            </div>
+            <div class="bg-navy-900 rounded-xl p-4 border border-navy-800 space-y-2 text-xs sm:text-sm">
+              <div class="font-bold text-gold-500">Типичные расхождения ИИ с текстом:</div>
+              <p id="compare-ai-critique" class="text-parchment-200 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytical Questions -->
+        <div class="bg-parchment-50 rounded-2xl p-6 border border-parchment-300 space-y-4">
+          <h4 class="font-bold text-base text-navy-900" data-i18n="compare_questions_title">Вопросы для критического анализа:</h4>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-navy-800 mb-1">1. Does AI follow the author's description? What details are missing?</label>
+              <textarea id="input-compare-missing" rows="2" oninput="saveLabProgress()" class="w-full rounded-xl border border-parchment-300 bg-white p-3 text-sm focus:outline-none focus:border-navy-800" placeholder="Write what AI missed..."></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-navy-800 mb-1">2. What did AI add on its own? Is it similar to your imagination?</label>
+              <textarea id="input-compare-added" rows="2" oninput="saveLabProgress()" class="w-full rounded-xl border border-parchment-300 bg-white p-3 text-sm focus:outline-none focus:border-navy-800" placeholder="Write what AI invented or changed..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 pt-5 border-t border-parchment-200 flex flex-wrap justify-between gap-3">
+          <button onclick="openLabStep(3)" class="px-5 py-2.5 rounded-xl border border-parchment-300 hover:bg-parchment-100 text-navy-900 font-semibold transition">
+            ← <span data-i18n="prev_step">Назад</span>
+          </button>
+          <button onclick="openLabStep(5)" class="px-6 py-3 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-semibold transition flex items-center gap-2">
+            <span data-i18n="next_reflect">Перейти к шагу 05: Reflect &amp; Evaluate</span> <span>→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 05: REFLECT & EVALUATION RUBRIC -->
+      <div id="lab-step-5" class="lab-step-panel hidden bg-white rounded-2xl p-6 sm:p-8 border border-parchment-300 shadow-sm fade-in">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-parchment-200 pb-4 mb-6">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-gold-600">Step 05 • Rubric Evaluation &amp; Final Conclusion</span>
+            <h3 class="serif-title text-2xl font-bold text-navy-900 mt-1" data-i18n="reflect_heading">Оценка результата ИИ и итоговый вывод</h3>
+          </div>
+          <button onclick="window.print()" class="no-print px-4 py-2 rounded-xl bg-navy-100 hover:bg-navy-200 text-navy-900 text-xs font-bold flex items-center gap-2 transition">
+            <span>🖨️</span> <span data-i18n="btn_print_report">Распечатать / Сохранить отчёт</span>
+          </button>
+        </div>
+
+        <!-- 5-Criteria Rubric Table -->
+        <div class="overflow-x-auto mb-8">
+          <table class="w-full text-left border-collapse rounded-xl overflow-hidden border border-parchment-300">
+            <thead>
+              <tr class="bg-navy-900 text-white text-xs uppercase tracking-wider">
+                <th class="p-3.5">Критерий (Criterion)</th>
+                <th class="p-3.5">Что оцениваем</th>
+                <th class="p-3.5 text-center">Балл (1–5)</th>
+                <th class="p-3.5">Аргументация ученика</th>
+              </tr>
+            </thead>
+            <tbody id="rubric-table-body" class="divide-y divide-parchment-200 text-sm">
+              <!-- Populated dynamically via JS -->
+            </tbody>
+            <tfoot>
+              <tr class="bg-parchment-100 font-bold text-navy-900">
+                <td colspan="2" class="p-3.5 text-right">Итоговый индекс понимания текста ИИ:</td>
+                <td class="p-3.5 text-center text-lg text-gold-600"><span id="rubric-total-score">15</span> / 25</td>
+                <td id="rubric-verdict-badge" class="p-3.5 text-xs text-navy-800">Частичная визуальная интерпретация</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Final Conclusion Card -->
+        <div class="bg-navy-900 text-white rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-base text-gold-500" data-i18n="final_conclusion_title">Итоговый вывод ученика (Для защиты проекта):</h4>
+            <button onclick="insertSampleConclusion()" class="no-print text-xs underline text-parchment-200 hover:text-white" data-i18n="btn_sample_conclusion">
+              Пример вывода
+            </button>
+          </div>
+          <textarea id="input-final-conclusion" rows="3" oninput="saveLabProgress()" class="w-full rounded-xl bg-navy-950 border border-navy-700 p-4 text-sm text-white placeholder-parchment-300/50 focus:outline-none focus:border-gold-500" placeholder="Write your final reflection: Did AI understand the author's artistic world?"></textarea>
+        </div>
+
+        <div class="mt-8 pt-5 border-t border-parchment-200 flex flex-wrap justify-between gap-3 no-print">
+          <button onclick="openLabStep(4)" class="px-5 py-2.5 rounded-xl border border-parchment-300 hover:bg-parchment-100 text-navy-900 font-semibold transition">
+            ← <span data-i18n="prev_step">Назад</span>
+          </button>
+          <button onclick="switchMainView('game')" class="px-6 py-3 rounded-xl bg-gold-500 hover:bg-gold-600 text-white font-bold shadow transition flex items-center gap-2">
+            <span>🎲</span> <span data-i18n="btn_test_in_game">Закрепить знания в настольной игре</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 3. INTERACTIVE BOARD GAME ("LITERARY QUEST: AUTHOR vs AI")   -->
+    <!-- ============================================================ -->
+    <section id="view-game" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 fade-in">
+      <!-- Game Header & Map Selector -->
+      <div class="bg-navy-900 text-white rounded-2xl p-5 sm:p-6 shadow-lg border border-navy-800 mb-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-md bg-gold-500 text-white text-[11px] font-bold uppercase tracking-wider">Board Game</span>
+            <span class="text-xs text-parchment-300">Katherine Rundell &amp; Antoine de Saint-Exupéry Editions</span>
+          </div>
+          <h2 id="game-board-title" class="serif-title text-2xl sm:text-3xl font-bold mt-1">AUTHOR VS AI: THE ROOFTOPPERS CHALLENGE</h2>
+        </div>
+
+        <!-- Map Selection Buttons -->
+        <div class="flex flex-wrap gap-2">
+          <button onclick="selectGameBoard('rooftoppers')" id="map-btn-rooftoppers" class="px-3.5 py-2 rounded-xl text-xs font-bold border transition flex items-center gap-1.5">
+            <span>🏰</span> Rooftoppers (Paris)
+          </button>
+          <button onclick="selectGameBoard('amazon')" id="map-btn-amazon" class="px-3.5 py-2 rounded-xl text-xs font-bold border transition flex items-center gap-1.5">
+            <span>🌴</span> The Amazon Challenge
+          </button>
+          <button onclick="selectGameBoard('prince')" id="map-btn-prince" class="px-3.5 py-2 rounded-xl text-xs font-bold border transition flex items-center gap-1.5">
+            <span>🪐</span> Asteroid B-612
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Board + Controls Grid -->
+      <div class="grid lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- LEFT/CENTER: Interactive Illustrated SVG Game Board -->
+        <div class="lg:col-span-8 bg-white rounded-2xl p-3 sm:p-4 border-2 border-navy-900 shadow-xl relative">
+          <div class="rounded-xl overflow-hidden border border-parchment-300 relative bg-navy-950">
+            <!-- Dynamic SVG Game Board -->
+            <svg id="game-board-svg" viewBox="0 0 800 920" class="w-full h-auto block select-none">
+              <!-- Rendered dynamically by JS based on selected map -->
+            </svg>
+          </div>
+
+          <!-- Legend Bar below Board -->
+          <div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-navy-800 bg-parchment-100 px-4 py-2.5 rounded-xl border border-parchment-300">
+            <div class="flex flex-wrap items-center gap-4">
+              <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Start / Safe</span>
+              <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> 🔍 Detail Check</span>
+              <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-sky-500 inline-block"></span> 💻 AI Prompt Duel</span>
+              <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span> 🔥 AI Hallucination</span>
+            </div>
+            <span class="font-semibold text-navy-900">18 Tiles to Finish</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: Game Controls, Players, Dice & Event Feed -->
+        <div class="lg:col-span-4 space-y-5">
+          
+          <!-- Player Mode & Scoreboard -->
+          <div class="bg-white rounded-2xl p-5 border border-parchment-300 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-parchment-200 pb-3">
+              <h3 class="font-bold text-base text-navy-900" data-i18n="players_title">Игроки и фишки</h3>
+              <select id="game-mode-select" onchange="resetBoardGame()" class="text-xs font-semibold bg-parchment-100 border border-parchment-300 rounded-lg px-2.5 py-1.5 text-navy-900 focus:outline-none">
+                <option value="ai">1 Игрок vs AI Bot</option>
+                <option value="pvp">2 Игрока (Команды)</option>
+              </select>
+            </div>
+
+            <!-- Player 1 Card -->
+            <div id="p1-card" class="p-3.5 rounded-xl border-2 transition flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-amber-100 border-2 border-amber-600 flex items-center justify-center text-lg shadow-sm">🔍</div>
+                <div>
+                  <div class="font-bold text-sm text-navy-900" id="p1-name">Reader (Вы)</div>
+                  <div class="text-xs text-navy-700">Клетка: <span id="p1-pos" class="font-bold">1</span> / 18 • Очки: <span id="p1-score" class="font-bold text-gold-600">0</span></div>
+                </div>
+              </div>
+              <span id="p1-turn-badge" class="px-2.5 py-1 rounded-full bg-gold-500 text-white text-[10px] font-bold uppercase">Ваш ход</span>
+            </div>
+
+            <!-- Player 2 / AI Card -->
+            <div id="p2-card" class="p-3.5 rounded-xl border-2 transition flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-sky-100 border-2 border-sky-600 flex items-center justify-center text-lg shadow-sm">📘</div>
+                <div>
+                  <div class="font-bold text-sm text-navy-900" id="p2-name">AI Explorer</div>
+                  <div class="text-xs text-navy-700">Клетка: <span id="p2-pos" class="font-bold">1</span> / 18 • Очки: <span id="p2-score" class="font-bold text-sky-600">0</span></div>
+                </div>
+              </div>
+              <span id="p2-turn-badge" class="hidden px-2.5 py-1 rounded-full bg-navy-800 text-white text-[10px] font-bold uppercase">Ход</span>
+            </div>
+          </div>
+
+          <!-- Dice Roller Box -->
+          <div class="bg-navy-900 text-white rounded-2xl p-6 shadow-lg border border-navy-800 text-center space-y-4">
+            <div class="text-xs uppercase tracking-widest text-parchment-300 font-semibold" id="turn-instruction">
+              Бросьте кубик, чтобы начать путешествие по книге
+            </div>
+
+            <div class="flex items-center justify-center gap-5">
+              <!-- Visual Dice -->
+              <div id="dice-display" class="w-16 h-16 rounded-2xl bg-parchment-100 text-navy-950 flex items-center justify-center text-3xl font-extrabold shadow-inner border-2 border-gold-500">
+                🎲
+              </div>
+
+              <button id="btn-roll-dice" onclick="handleRollDice()" class="px-6 py-4 rounded-2xl bg-gold-500 hover:bg-gold-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-base shadow-lg transition transform active:scale-95">
+                Бросить кубик
+              </button>
+            </div>
+
+            <div class="pt-2 flex justify-center">
+              <button onclick="resetBoardGame()" class="text-xs text-parchment-300 hover:text-white underline">
+                Начать партию заново
+              </button>
+            </div>
+          </div>
+
+          <!-- Game Log / Narrative Feed -->
+          <div class="bg-white rounded-2xl p-5 border border-parchment-300 shadow-sm">
+            <h4 class="font-bold text-xs uppercase tracking-wider text-navy-700 mb-3">Журнал экспедиции:</h4>
+            <div id="game-log" class="space-y-2 max-h-48 overflow-y-auto text-xs text-navy-800 pr-1">
+              <div class="p-2.5 rounded-lg bg-parchment-100 border border-parchment-200">
+                Добро пожаловать в <strong>Author vs. AI Challenge</strong>! Выберите карту и бросьте кубик.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 4. ABOUT & PROJECT DEFENSE GUIDE                             -->
+    <!-- ============================================================ -->
+    <section id="view-about" class="hidden max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 fade-in">
+      <div class="bg-white rounded-3xl p-6 sm:p-10 border border-parchment-300 shadow-sm space-y-8">
+        <div class="border-b border-parchment-200 pb-6">
+          <span class="text-xs font-bold uppercase tracking-widest text-gold-600">Academic Project Passport</span>
+          <h2 class="serif-title text-3xl font-bold text-navy-900 mt-1">О проекте «Author vs. AI: Visual Literature Lab»</h2>
+          <p class="text-navy-700 mt-2 leading-relaxed">
+            Интерактивное образовательное веб-приложение, в котором ученики сравнивают, как художественное произведение создаёт писатель через слово и как его интерпретирует искусственный интеллект через изображение.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-parchment-100 rounded-2xl p-5 border border-parchment-300 space-y-2">
+            <h3 class="font-bold text-navy-900 text-lg">🎯 Цель проекта</h3>
+            <p class="text-sm text-navy-800 leading-relaxed">
+              Развитие читательской, критической и визуальной грамотности учащихся через сопоставление авторского художественного описания с визуальными интерпретациями, созданными искусственным интеллектом.
+            </p>
+          </div>
+          <div class="bg-navy-900 text-white rounded-2xl p-5 space-y-2">
+            <h3 class="font-bold text-gold-500 text-lg">💡 Научная и практическая новизна</h3>
+            <p class="text-sm text-parchment-100 leading-relaxed">
+              Объединение классического литературного анализа, визуального творчества, геймификации (настольный квест) и критического промпт-инжиниринга в единой образовательной среде.
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="serif-title text-xl font-bold text-navy-900 mb-3">План демонстрации проекта на защите:</h3>
+          <ol class="space-y-2.5 text-sm text-navy-800 list-decimal list-inside bg-parchment-50 p-5 rounded-2xl border border-parchment-300">
+            <li>Показать концепцию и главную страницу приложения <strong>Author vs. AI</strong>.</li>
+            <li>Выбрать произведение (например, <em>The Little Prince</em> или <em>Rooftoppers</em> Кэтрин Ранделл) в разделе <strong>Лаборатория</strong>.</li>
+            <li>Продемонстрировать отрывок текста и заполнение мысленного образа ученика (Шаг 01–02).</li>
+            <li>Показать составление английского промпта и генерацию визуального образа (Шаг 03).</li>
+            <li>Провести сравнительный анализ деталей и оценить работу ИИ по 5-балльной шкале (Шаг 04–05).</li>
+            <li>Показать геймифицированный формат закрепления знаний в разделе <strong>Настольная игра</strong>.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== BOARD GAME CHALLENGE MODAL ==================== -->
+  <div id="challenge-modal" class="fixed inset-0 z-50 hidden bg-navy-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full border-2 border-navy-900 shadow-2xl overflow-hidden fade-in">
+      <!-- Modal Header -->
+      <div id="modal-header" class="bg-navy-900 text-white px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span id="modal-icon" class="text-2xl">🔍</span>
+          <div>
+            <span id="modal-badge" class="text-[10px] font-bold uppercase tracking-widest text-gold-500 block">Author vs. AI Challenge</span>
+            <h3 id="modal-title" class="font-bold text-lg">Испытание читателя</h3>
+          </div>
+        </div>
+        <span id="modal-tile-num" class="px-3 py-1 rounded-full bg-navy-800 text-xs font-bold">Tile #4</span>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 space-y-4">
+        <div id="modal-excerpt-box" class="bg-parchment-100 rounded-xl p-4 border border-parchment-300 text-sm italic text-navy-950 serif-title"></div>
+        
+        <p id="modal-question" class="font-bold text-navy-900 text-base"></p>
+
+        <!-- Multiple Choice Options -->
+        <div id="modal-options" class="space-y-2.5"></div>
+
+        <!-- Feedback Area after Answer -->
+        <div id="modal-feedback" class="hidden rounded-xl p-4 text-sm border"></div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="bg-parchment-100 px-6 py-3.5 border-t border-parchment-300 flex justify-end">
+        <button id="modal-continue-btn" onclick="closeChallengeModal()" class="hidden px-6 py-2.5 rounded-xl bg-navy-900 hover:bg-navy-800 text-white font-bold text-sm transition">
+          Продолжить игру →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-navy-950 text-parchment-300 py-6 border-t border-navy-800 mt-12 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      <div>
+        <strong class="text-white">AUTHOR vs. AI: Visual Literature Lab</strong> — Interactive Educational Web Application
+      </div>
+      <div>
+        READ • IMAGINE • GENERATE • COMPARE • REFLECT
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== APPLICATION JAVASCRIPT ==================== -->
+  <script>
+    // =========================================================================
+    // 1. BILINGUAL DICTIONARY (RU / EN)
+    // =========================================================================
+    let currentLang = 'ru';
+
+    const i18n = {
+      ru: {
+        nav_home: 'Главная',
+        nav_lab: 'Лаборатория (5 шагов)',
+        nav_lab_short: 'Лаборатория',
+        nav_game: 'Настольная игра',
+        nav_game_short: 'Игра',
+        nav_about: 'О проекте',
+        hero_subtitle: 'Может ли искусственный интеллект по-настоящему передать художественный мир писателя? Читайте отрывки, визуализируйте образы, создавайте промпты и проверяйте ИИ на точность.',
+        btn_start_lab: 'Начать лабораторию (5 шагов)',
+        btn_start_game: 'Играть в настольную игру',
+        hero_card_label: 'Исследовательская модель',
+        steps_heading: 'Пять шагов исследования текста',
+        steps_subheading: 'Нажмите на любой этап, чтобы перейти непосредственно к работе в интерактивной лаборатории.',
+        step1_title: 'Choose a Literary Text',
+        step1_desc: 'Выбор произведения или отрывка, внимательное чтение и знакомство с авторским описанием.',
+        step2_title: 'Imagine',
+        step2_desc: 'Ученик фиксирует, каким он представляет героя, место, цвета и атмосферу сцены до запуска ИИ.',
+        step3_title: 'Generate with AI',
+        step3_desc: 'Составление эффективного промпта на английском языке и генерация визуальной интерпретации.',
+        step4_title: 'Compare',
+        step4_desc: 'Сопоставление авторского текста, собственного воображения и деталей, добавленных или упущенных ИИ.',
+        step5_title: 'Reflect & Rubric',
+        step5_desc: 'Оценка по 5 критериям (Accuracy, Details, Creativity, Emotions, Message) и формулирование вывода.',
+        open_step: 'Открыть этап',
+        game_banner_title: 'Литературный квест-ходилка: Author vs. AI Challenge',
+        game_banner_desc: 'Пройдите игровое поле по мотивам книг «Крышеходы» (The Rooftoppers Challenge), «Исследователь» (The Amazon Challenge) Кэтрин Ранделл или «Маленький принц». Бросайте кубик, поднимайтесь по лестницам знаний и разоблачайте галлюцинации ИИ!',
+        btn_launch_board: 'Запустить игровое поле',
+        lab_workspace_title: 'Рабочая лаборатория анализа текста',
+        select_book_label: 'Произведение:',
+        key_details_title: 'Ключевые художественные детали автора',
+        teacher_tip_title: 'Методическая подсказка:',
+        teacher_tip_text: 'Обратите внимание не только на предметы (вулканы, крыши, лианы), но и на настроение, масштаб и символику. Именно эмоциональный подтекст чаще всего теряется при генерации ИИ.',
+        next_imagine: 'Перейти к шагу 02: Imagine',
+        imagine_heading: 'Зафиксируйте свой мысленный образ до встречи с ИИ',
+        imagine_sub: 'Ответьте на 4 вопроса на английском или русском языке. Ваши ответы сохраняются автоматически.',
+        prev_step: 'Назад',
+        next_create: 'Перейти к шагу 03: Create with AI',
+        create_heading: 'Создайте промпт для ИИ и сгенерируйте иллюстрацию',
+        create_sub: 'Сформулируйте запрос на английском языке, добавьте художественный стиль и посмотрите, как нейросеть интерпретирует текст.',
+        btn_fill_example: 'Вставить образец промпта',
+        prompt_chips_label: 'Добавить детали стиля в промпт:',
+        btn_generate_ai: 'Сгенерировать образ ИИ',
+        btn_copy_prompt: 'Copy prompt',
+        canvas_caption: 'ИИ-визуализация строится на основе вашего промпта и демонстрирует типичные особенности нейросетевой интерпретации.',
+        next_compare: 'Перейти к шагу 04: Compare',
+        compare_heading: 'Сравнение: Замысел автора vs. Визуализация ИИ',
+        compare_questions_title: 'Вопросы для критического анализа:',
+        next_reflect: 'Перейти к шагу 05: Reflect & Evaluate',
+        reflect_heading: 'Оценка результата ИИ и итоговый вывод',
+        btn_print_report: 'Распечатать / Сохранить отчёт',
+        final_conclusion_title: 'Итоговый вывод ученика (Для защиты проекта):',
+        btn_sample_conclusion: 'Пример вывода',
+        btn_test_in_game: 'Закрепить знания в настольной игре',
+        players_title: 'Игроки и фишки'
+      },
+      en: {
+        nav_home: 'Home',
+        nav_lab: 'Lab (5 Steps)',
+        nav_lab_short: 'Lab',
+        nav_game: 'Board Game',
+        nav_game_short: 'Game',
+        nav_about: 'About Project',
+        hero_subtitle: 'Can Artificial Intelligence truly capture the artistic world of a writer? Read literary excerpts, visualize scenes, craft prompts, and evaluate AI accuracy.',
+        btn_start_lab: 'Start Literature Lab (5 Steps)',
+        btn_start_game: 'Play Board Game',
+        hero_card_label: 'Research Framework',
+        steps_heading: 'Five Steps of Literary Investigation',
+        steps_subheading: 'Click any stage below to jump directly into the interactive workspace.',
+        step1_title: '01. Choose a Literary Text',
+        step1_desc: 'Select a literary excerpt, read closely, and identify the author’s sensory imagery.',
+        step2_title: '02. Imagine',
+        step2_desc: 'Record how you picture the setting, colours, objects, and mood before seeing AI art.',
+        step3_title: '03. Generate with AI',
+        step3_desc: 'Engineer an effective English prompt and generate a visual AI interpretation.',
+        step4_title: '04. Compare',
+        step4_desc: 'Compare the author’s words, your imagination, and what AI missed or invented.',
+        step5_title: '05. Reflect & Rubric',
+        step5_desc: 'Score AI across 5 criteria (Accuracy, Details, Creativity, Emotions, Message) and conclude.',
+        open_step: 'Open Step',
+        game_banner_title: 'Literary Quest Board Game: Author vs. AI Challenge',
+        game_banner_desc: 'Explore interactive game boards inspired by Katherine Rundell’s "Rooftoppers" & "The Explorer", plus "The Little Prince". Roll the dice, climb ladders of literary insight, and spot AI hallucinations!',
+        btn_launch_board: 'Launch Game Board',
+        lab_workspace_title: 'Interactive Text Analysis Workspace',
+        select_book_label: 'Literary Work:',
+        key_details_title: 'Author’s Key Artistic Details',
+        teacher_tip_title: 'Analytical Tip:',
+        teacher_tip_text: 'Pay attention not only to physical objects (volcanoes, rooftops, vines), but also to scale, mood, and symbolism—elements AI frequently misinterprets.',
+        next_imagine: 'Next: Step 02 Imagine',
+        imagine_heading: 'Capture Your Mental Image Before Using AI',
+        imagine_sub: 'Answer the 4 guiding questions below. Your responses are saved automatically in your browser.',
+        prev_step: 'Back',
+        next_create: 'Next: Step 03 Create with AI',
+        create_heading: 'Craft an AI Prompt & Generate Illustration',
+        create_sub: 'Write a descriptive prompt in English, add artistic style tags, and inspect how the AI renders the scene.',
+        btn_fill_example: 'Insert Sample Prompt',
+        prompt_chips_label: 'Append style & mood modifiers:',
+        btn_generate_ai: 'Generate AI Interpretation',
+        btn_copy_prompt: 'Copy prompt',
+        canvas_caption: 'The simulated AI render responds to your prompt keywords and highlights typical neural network interpretations.',
+        next_compare: 'Next: Step 04 Compare',
+        compare_heading: 'Comparison: Author’s Vision vs. AI Interpretation',
+        compare_questions_title: 'Critical Analysis Questions:',
+        next_reflect: 'Next: Step 05 Reflect & Evaluate',
+        reflect_heading: 'Rubric Evaluation & Final Conclusion',
+        btn_print_report: 'Print / Save Lab Report',
+        final_conclusion_title: 'Student Final Reflection (For Project Defense):',
+        btn_sample_conclusion: 'Insert Sample Conclusion',
+        btn_test_in_game: 'Test Your Skills in the Board Game',
+        players_title: 'Players & Tokens'
+      }
+    };
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('author_vs_ai_lang', lang);
+      
+      document.getElementById('lang-ru').className = lang === 'ru'
+        ? 'px-2.5 py-1 rounded-lg bg-gold-500 text-white transition'
+        : 'px-2.5 py-1 rounded-lg text-parchment-300 hover:text-white transition';
+      document.getElementById('lang-en').className = lang === 'en'
+        ? 'px-2.5 py-1 rounded-lg bg-gold-500 text-white transition'
+        : 'px-2.5 py-1 rounded-lg text-parchment-300 hover:text-white transition';
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[lang][key]) {
+          el.textContent = i18n[lang][key];
+        }
+      });
+    }
+
+    // =========================================================================
+    // 2. LITERARY DATABASE FOR LAB MODE
+    // =========================================================================
+    const labBooks = {
+      little_prince: {
+        title: 'The Little Prince — Antoine de Saint-Exupéry',
+        chapter: 'Chapter IV & VI (Asteroid B-612)',
+        excerptEn: '“His planet was scarcely any larger than a house! On this tiny asteroid there were three volcanoes—two active and one extinct—and a single, proud rose with four thorns. One day, he watched the sunset forty-four times by simply moving his chair a few steps.”',
+        excerptRu: '«Его планета была величиной всего с дом! На этом крошечном астероиде было три вулкана — два действующих и один потухший — и всего одна гордая роза с четырьмя шипами. Однажды он видел закат сорок четыре раза, просто передвигая свой стул на несколько шагов.»',
+        details: [
+          'Масштаб планеты: размером «всего с дом» (крошечный астероид).',
+          'Ровно три вулкана: два действующих (с лёгким дымком) и один потухший.',
+          'Одна-единственная роза (символ хрупкости и привязанности), а не целый сад.',
+          'Тихая, созерцательная грусть заката и маленький стул.'
+        ],
+        samplePrompt: 'Create an illustration of a tiny planet no bigger than a house with a small golden-haired boy, three small volcanoes, one single red rose under glass, and a peaceful sunset. Use a soft watercolour style.',
+        aiCritique: 'ИИ хорошо передал золотистый закат и образ мальчика, однако нейросети часто рисуют полноценный земной пейзаж вместо планеты размером с дом, добавляют лишние цветы или делают вулканы гигантскими и пугающими вместо уютных и миниатюрных.',
+        sampleConclusion: 'AI can create beautiful watercolour pictures of stars and sunsets, but it often misses the poetic scale and symbolic loneliness of Asteroid B-612. Human imagination and careful reading are essential to understand the author’s emotional message.'
+      },
+      rooftoppers: {
+        title: 'Rooftoppers — Katherine Rundell',
+        chapter: 'Chapter 1 & 12 (Seine & Paris Rooftops)',
+        excerptEn: '“Found floating in a cello case on the English Channel, Sophie grew up to believe her mother survived. Years later, across the zinc-grey rooftops of twilight Paris, she balances beside Matteo near a Gothic spire, where rooftoppers camp under the crescent moon.”',
+        excerptRu: '«Найденная плывущей в футляре от виолончели в Ла-Манше, Софи выросла с верой, что её мама выжила. Спустя годы над цинково-серыми крышами сумеречного Парижа она балансирует рядом с Маттео у готического шпиля, где крышеходы разбили лагерь под серпом луны.»',
+        details: [
+          'Футляр от виолончели как символ спасения и музыки.',
+          'Цинково-серые парижские крыши (zinc-grey rooftops) и кованые балконы.',
+          'Готический шпиль Нотр-Дама и сумеречное небо с полумесяцем.',
+          'Ощущение свободы, смелости и тайного братства детей над городом.'
+        ],
+        samplePrompt: 'Atmospheric book illustration of two children balancing on zinc-grey Paris rooftops at twilight near a Gothic cathedral spire, crescent moon, warm lantern glow, soft watercolour and ink style.',
+        aiCritique: 'ИИ эффектно рисует Эйфелеву башню и вечерний Париж, но нередко превращает опасные скользкие крыши в ровные улицы или делает героев похожими на супергероев, теряя хрупкость и реализм приключения Кэтрин Ранделл.',
+        sampleConclusion: 'While AI captures the romantic skyline of Paris, it tends to exaggerate action into fantasy. Katherine Rundell’s writing relies on subtle sensory details—like the cold zinc roofs and the sound of a cello—that only a thoughtful reader truly feels.'
+      },
+      amazon: {
+        title: 'The Explorer — Katherine Rundell',
+        chapter: 'Chapter 1 & 9 (The Green Cathedral)',
+        excerptEn: '“After their small plane crashed into the dense Amazon rainforest, four children discovered a clearing where giant trees arched together like a Green Cathedral. Beneath a crescent moon, they huddled around a crackling campfire as tropical rain drummed on emerald leaves.”',
+        excerptRu: '«После крушения маленького самолёта в густых джунглях Амазонки четверо детей нашли поляну, где гигантские деревья сплелись сводами, словно Зелёный собор. Под серпом луны они жались к трескучему костру, пока тропический ливень барабанил по изумрудным листьям.»',
+        details: [
+          '«Зелёный собор» — природный свод из переплетённых гигантских деревьев, напоминающий готическую арку.',
+          'Четверо испуганных, но сплочённых детей у ночного костра.',
+          'Контраст между стихией (тропический ливень, крушение самолёта) и уютом огня.',
+          'Древние каменные руины, скрытые в глубине сельвы.'
+        ],
+        samplePrompt: 'Children sitting around a warm campfire at night inside a lush Amazon jungle clearing where giant trees form a natural Green Cathedral arch, crescent moon, atmospheric watercolour illustration.',
+        aiCritique: 'Нейросеть легко генерирует густые джунгли и костёр, но часто буквально рисует каменный церковный собор вместо метафоры «Зелёного собора» из живых деревьев, а также путает количество детей у костра.',
+        sampleConclusion: 'AI interprets metaphors like "The Green Cathedral" too literally, sometimes inserting stone churches into the rainforest. Literature uses poetic metaphors that require human imagination rather than literal pixel matching.'
+      }
+    };
+
+    let currentLabBook = 'little_prince';
+    let currentLabStep = 1;
+    let rubricScores = [4, 3, 4, 3, 3]; // Accuracy, Details, Creativity, Emotions, Message
+
+    const rubricCriteria = [
+      { key: 'Accuracy', desc: 'Соответствие тексту и фактам отрывка' },
+      { key: 'Details', desc: 'Наличие ключевых художественных деталей' },
+      { key: 'Creativity', desc: 'Творческая визуальная интерпретация' },
+      { key: 'Emotions', desc: 'Передача настроения и атмосферы автора' },
+      { key: "Author's Message", desc: 'Сохранение главной идеи и символики' }
+    ];
+
+    // =========================================================================
+    // 3. NAVIGATION & LAB WORKFLOW LOGIC
+    // =========================================================================
+    function switchMainView(viewName) {
+      ['home', 'lab', 'game', 'about'].forEach(v => {
+        document.getElementById(`view-${v}`).classList.add('hidden');
+        const navBtn = document.getElementById(`nav-${v}`);
+        if (navBtn) {
+          navBtn.className = v === viewName
+            ? 'px-4 py-1.5 rounded-lg text-sm font-semibold bg-gold-500 text-white transition flex items-center gap-1.5'
+            : 'px-4 py-1.5 rounded-lg text-sm font-medium text-parchment-200 hover:text-white hover:bg-navy-800 transition flex items-center gap-1.5';
+        }
+      });
+
+      document.getElementById(`view-${viewName}`).classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (viewName === 'lab') {
+        selectLabBook(currentLabBook);
+        openLabStep(currentLabStep);
+      } else if (viewName === 'game') {
+        renderBoardGame();
+      }
+    }
+
+    function openLabStep(stepNum) {
+      currentLabStep = stepNum;
+      for (let i = 1; i <= 5; i++) {
+        const panel = document.getElementById(`lab-step-${i}`);
+        const stepper = document.getElementById(`stepper-${i}`);
+        if (i === stepNum) {
+          panel.classList.remove('hidden');
+          stepper.className = 'p-3 rounded-xl border-2 border-navy-900 bg-navy-900 text-white text-left transition flex flex-col sm:flex-row sm:items-center gap-2 shadow-sm';
+          stepper.querySelector('span').className = 'w-7 h-7 rounded-lg bg-gold-500 text-white flex items-center justify-center text-xs font-bold shrink-0';
+        } else {
+          panel.classList.add('hidden');
+          stepper.className = 'p-3 rounded-xl border border-parchment-300 bg-white hover:bg-parchment-100 text-navy-900 text-left transition flex flex-col sm:flex-row sm:items-center gap-2';
+          stepper.querySelector('span').className = 'w-7 h-7 rounded-lg bg-parchment-200 text-navy-900 flex items-center justify-center text-xs font-bold shrink-0';
+        }
+      }
+
+      if (stepNum === 3) {
+        generateLabVisual(true);
+      }
+      if (stepNum === 4) {
+        syncCompareStep();
+      }
+      if (stepNum === 5) {
+        renderRubricTable();
+      }
+    }
+
+    function selectLabBook(bookKey) {
+      currentLabBook = bookKey;
+      localStorage.setItem('author_vs_ai_book', bookKey);
+
+      ['little_prince', 'rooftoppers', 'amazon'].forEach(k => {
+        const btn = document.getElementById(`book-btn-${k}`);
+        btn.className = k === bookKey
+          ? 'px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold border-2 border-navy-900 bg-navy-900 text-white transition'
+          : 'px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border border-parchment-300 bg-parchment-50 text-navy-900 hover:bg-parchment-100 transition';
+      });
+
+      const book = labBooks[bookKey];
+      document.getElementById('lab-book-title').textContent = book.title;
+      document.getElementById('lab-book-chapter').textContent = book.chapter;
+      document.getElementById('lab-excerpt-en').textContent = book.excerptEn;
+      document.getElementById('lab-excerpt-ru').textContent = book.excerptRu;
+
+      const detailsList = document.getElementById('lab-key-details');
+      detailsList.innerHTML = book.details.map(d => `
+        <li class="flex items-start gap-2">
+          <span class="text-gold-500 font-bold">•</span>
+          <span>${d}</span>
+        </li>
+      `).join('');
+
+      loadLabProgress();
+      if (currentLabStep === 3) generateLabVisual(true);
+      if (currentLabStep === 4) syncCompareStep();
+    }
+
+    function saveLabProgress() {
+      const data = {
+        look: document.getElementById('input-imagine-look').value,
+        colours: document.getElementById('input-imagine-colours').value,
+        objects: document.getElementById('input-imagine-objects').value,
+        mood: document.getElementById('input-imagine-mood').value,
+        prompt: document.getElementById('input-ai-prompt').value,
+        missing: document.getElementById('input-compare-missing').value,
+        added: document.getElementById('input-compare-added').value,
+        conclusion: document.getElementById('input-final-conclusion').value,
+        rubricScores: rubricScores
+      };
+      localStorage.setItem(`lab_data_${currentLabBook}`, JSON.stringify(data));
+    }
+
+    function loadLabProgress() {
+      const raw = localStorage.getItem(`lab_data_${currentLabBook}`);
+      const book = labBooks[currentLabBook];
+      if (raw) {
+        const data = JSON.parse(raw);
+        document.getElementById('input-imagine-look').value = data.look || '';
+        document.getElementById('input-imagine-colours').value = data.colours || '';
+        document.getElementById('input-imagine-objects').value = data.objects || '';
+        document.getElementById('input-imagine-mood').value = data.mood || '';
+        document.getElementById('input-ai-prompt').value = data.prompt || book.samplePrompt;
+        document.getElementById('input-compare-missing').value = data.missing || '';
+        document.getElementById('input-compare-added').value = data.added || '';
+        document.getElementById('input-final-conclusion').value = data.conclusion || '';
+        if (data.rubricScores) rubricScores = data.rubricScores;
+      } else {
+        document.getElementById('input-imagine-look').value = '';
+        document.getElementById('input-imagine-colours').value = '';
+        document.getElementById('input-imagine-objects').value = '';
+        document.getElementById('input-imagine-mood').value = '';
+        document.getElementById('input-ai-prompt').value = book.samplePrompt;
+        document.getElementById('input-compare-missing').value = '';
+        document.getElementById('input-compare-added').value = '';
+        document.getElementById('input-final-conclusion').value = '';
+      }
+    }
+
+    function fillExamplePrompt() {
+      document.getElementById('input-ai-prompt').value = labBooks[currentLabBook].samplePrompt;
+      saveLabProgress();
+      showToast('✨', 'Образец промпта вставлен!');
+    }
+
+    function appendPromptTag(tag) {
+      const el = document.getElementById('input-ai-prompt');
+      const val = el.value.trim();
+      if (!val.toLowerCase().includes(tag.toLowerCase())) {
+        el.value = val ? `${val}, ${tag}` : tag;
+        saveLabProgress();
+      }
+    }
+
+    function copyPromptToClipboard() {
+      const el = document.getElementById('input-ai-prompt');
+      el.select();
+      el.setSelectionRange(0, 99999);
+      try {
+        document.execCommand('copy');
+        showToast('📋', 'Промпт скопирован! Можно вставить в Microsoft Designer или Midjourney.');
+      } catch (e) {
+        showToast('⚠️', 'Не удалось скопировать автоматически.');
+      }
+    }
+
+    function insertSampleConclusion() {
+      document.getElementById('input-final-conclusion').value = labBooks[currentLabBook].sampleConclusion;
+      saveLabProgress();
+      showToast('✍️', 'Пример вывода добавлен!');
+    }
+
+    // =========================================================================
+    // 4. BESPOKE HTML5 CANVAS AI ART GENERATOR (SIMULATED NEURAL RENDERER)
+    // =========================================================================
+    function generateLabVisual(silent = false) {
+      const promptText = document.getElementById('input-ai-prompt').value.toLowerCase();
+      const canvas = document.getElementById('lab-ai-canvas');
+      if (!canvas) return;
+
+      renderSceneOnCanvas(canvas, currentLabBook, promptText);
+
+      // Update AI Parser Status
+      const detectedKeywords = [];
+      if (promptText.includes('sunset') || promptText.includes('golden')) detectedKeywords.push('Sunset Palette');
+      if (promptText.includes('watercolour')) detectedKeywords.push('Watercolour Wash');
+      if (promptText.includes('moon') || promptText.includes('twilight') || promptText.includes('night')) detectedKeywords.push('Nocturnal Sky');
+      if (promptText.includes('rose')) detectedKeywords.push('Single Rose');
+      if (promptText.includes('volcano')) detectedKeywords.push('Volcanoes');
+      if (promptText.includes('roof') || promptText.includes('paris')) detectedKeywords.push('Paris Skyline');
+      if (promptText.includes('jungle') || promptText.includes('cathedral') || promptText.includes('campfire')) detectedKeywords.push('Rainforest Canopy');
+
+      const parserStatus = document.getElementById('ai-parser-status');
+      const badge = document.getElementById('ai-render-badge');
+      badge.textContent = 'Generated • ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      parserStatus.innerHTML = `
+        Распознанные токены: <span class="text-white font-semibold">${detectedKeywords.length ? detectedKeywords.join(', ') : 'General Literary Scene'}</span>.<br/>
+        <span class="text-amber-300">Примечание ИИ:</span> Алгоритм добавил художественное свечение и стилизацию, но мог упростить авторский подтекст.
+      `;
+
+      if (!silent) {
+        showToast('🎨', 'ИИ-иллюстрация сгенерирована на основе вашего промпта!');
+      }
+    }
+
+    function renderSceneOnCanvas(canvas, bookKey, promptText) {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = Math.max(rect.width || 600, 480);
+      canvas.height = Math.max(rect.height || 400, 320);
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      const isSunset = promptText.includes('sunset') || promptText.includes('golden') || bookKey === 'little_prince';
+      const isWatercolour = promptText.includes('watercolour');
+
+      // Background Sky Gradient
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+      if (bookKey === 'little_prince') {
+        if (isSunset) {
+          skyGrad.addColorStop(0, '#1E1B4B');
+          skyGrad.addColorStop(0.55, '#9D174D');
+          skyGrad.addColorStop(1, '#F59E0B');
+        } else {
+          skyGrad.addColorStop(0, '#091324');
+          skyGrad.addColorStop(1, '#1E3A8A');
+        }
+      } else if (bookKey === 'rooftoppers') {
+        skyGrad.addColorStop(0, '#0F172A');
+        skyGrad.addColorStop(0.6, '#312E81');
+        skyGrad.addColorStop(1, '#D97706');
+      } else {
+        skyGrad.addColorStop(0, '#06281E');
+        skyGrad.addColorStop(0.6, '#0F5132');
+        skyGrad.addColorStop(1, '#1E293B');
+      }
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Stars
+      ctx.fillStyle = '#FEF3C7';
+      for (let i = 0; i < 45; i++) {
+        const sx = ((i * 97) % w);
+        const sy = ((i * 53) % (h * 0.55));
+        const sr = (i % 3 === 0) ? 1.8 : 1;
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      if (bookKey === 'little_prince') {
+        // Glowing Sunset Sun
+        ctx.fillStyle = 'rgba(253, 224, 71, 0.25)';
+        ctx.beginPath();
+        ctx.arc(w * 0.75, h * 0.42, 58, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#FDE047';
+        ctx.beginPath();
+        ctx.arc(w * 0.75, h * 0.42, 34, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Asteroid B-612 Curve
+        const px = w * 0.46;
+        const py = h * 0.98;
+        const pr = h * 0.44;
+        const planetGrad = ctx.createRadialGradient(px, py - pr * 0.5, 20, px, py, pr);
+        planetGrad.addColorStop(0, '#FDE68A');
+        planetGrad.addColorStop(1, '#B45309');
+        ctx.fillStyle = planetGrad;
+        ctx.beginPath();
+        ctx.arc(px, py, pr, Math.PI, Math.PI * 2);
+        ctx.fill();
+
+        // Three Volcanoes
+        drawVolcano(ctx, px - 85, py - pr + 18, 36, 38, true);
+        drawVolcano(ctx, px - 42, py - pr + 8, 30, 32, true);
+        drawVolcano(ctx, px + 78, py - pr + 22, 32, 30, false);
+
+        // Little Prince Silhouette
+        ctx.fillStyle = '#1E3A8A';
+        ctx.fillRect(px - 6, py - pr - 34, 12, 26); // Coat
+        ctx.fillStyle = '#FDE047';
+        ctx.beginPath();
+        ctx.arc(px, py - pr - 42, 8, 0, Math.PI * 2); // Golden hair/head
+        ctx.fill();
+        // Flowing Scarf
+        ctx.strokeStyle = '#FACC15';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(px, py - pr - 32);
+        ctx.quadraticCurveTo(px - 22, py - pr - 38, px - 36, py - pr - 26);
+        ctx.stroke();
+
+        // Single Rose under Glass Dome
+        ctx.strokeStyle = '#15803D';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(px + 34, py - pr + 4);
+        ctx.lineTo(px + 34, py - pr - 16);
+        ctx.stroke();
+        ctx.fillStyle = '#E11D48';
+        ctx.beginPath();
+        ctx.arc(px + 34, py - pr - 19, 6, 0, Math.PI * 2);
+        ctx.fill();
+        // Glass dome
+        ctx.strokeStyle = 'rgba(255,255,255,0.65)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(px + 34, py - pr - 12, 13, Math.PI, 0);
+        ctx.lineTo(px + 47, py - pr + 4);
+        ctx.moveTo(px + 21, py - pr - 12);
+        ctx.lineTo(px + 21, py - pr + 4);
+        ctx.stroke();
+
+      } else if (bookKey === 'rooftoppers') {
+        // Crescent Moon
+        ctx.fillStyle = '#FEF3C7';
+        ctx.beginPath();
+        ctx.arc(w * 0.2, h * 0.22, 22, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#161B33';
+        ctx.beginPath();
+        ctx.arc(w * 0.22, h * 0.2, 19, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Distant Eiffel Tower Silhouette
+        ctx.strokeStyle = 'rgba(254, 243, 199, 0.35)';
+        ctx.lineWidth = 2;
+        const ex = w * 0.72;
+        ctx.beginPath();
+        ctx.moveTo(ex, h * 0.18);
+        ctx.lineTo(ex - 26, h * 0.72);
+        ctx.moveTo(ex, h * 0.18);
+        ctx.lineTo(ex + 26, h * 0.72);
+        ctx.moveTo(ex - 16, h * 0.5);
+        ctx.lineTo(ex + 16, h * 0.5);
+        ctx.stroke();
+
+        // Zinc-Grey Paris Rooftops
+        ctx.fillStyle = '#334155';
+        ctx.beginPath();
+        ctx.moveTo(0, h);
+        ctx.lineTo(0, h * 0.68);
+        ctx.lineTo(w * 0.28, h * 0.52);
+        ctx.lineTo(w * 0.55, h * 0.68);
+        ctx.lineTo(w * 0.8, h * 0.55);
+        ctx.lineTo(w, h * 0.66);
+        ctx.lineTo(w, h);
+        ctx.closePath();
+        ctx.fill();
+
+        // Rooftop Ridge & Chimneys
+        ctx.fillStyle = '#1E293B';
+        ctx.fillRect(w * 0.24, h * 0.44, 16, 28);
+        ctx.fillRect(w * 0.77, h * 0.47, 14, 24);
+
+        // Two Children Balancing on Ridge
+        ctx.fillStyle = '#F59E0B';
+        ctx.beginPath();
+        ctx.arc(w * 0.42, h * 0.54, 6, 0, Math.PI * 2);
+        ctx.arc(w * 0.48, h * 0.56, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#F8FAFC';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(w * 0.42, h * 0.6);
+        ctx.lineTo(w * 0.42, h * 0.72);
+        ctx.moveTo(w * 0.48, h * 0.62);
+        ctx.lineTo(w * 0.48, h * 0.74);
+        ctx.stroke();
+
+      } else {
+        // Amazon Green Cathedral Arching Trees
+        ctx.strokeStyle = '#064E3B';
+        ctx.lineWidth = 18;
+        ctx.beginPath();
+        ctx.moveTo(w * 0.15, h);
+        ctx.quadraticCurveTo(w * 0.2, h * 0.25, w * 0.5, h * 0.15);
+        ctx.moveTo(w * 0.85, h);
+        ctx.quadraticCurveTo(w * 0.8, h * 0.25, w * 0.5, h * 0.15);
+        ctx.stroke();
+
+        // Lush Foliage Canopy
+        ctx.fillStyle = '#047857';
+        for (let i = 0; i < 9; i++) {
+          ctx.beginPath();
+          ctx.arc((w / 8) * i, h * 0.16 + (i % 2) * 18, 55, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Forest Floor
+        ctx.fillStyle = '#022C22';
+        ctx.fillRect(0, h * 0.75, w, h * 0.25);
+
+        // Warm Campfire Glow
+        const fireGrad = ctx.createRadialGradient(w * 0.5, h * 0.74, 5, w * 0.5, h * 0.74, 85);
+        fireGrad.addColorStop(0, 'rgba(251, 191, 36, 0.85)');
+        fireGrad.addColorStop(1, 'rgba(251, 191, 36, 0)');
+        ctx.fillStyle = fireGrad;
+        ctx.beginPath();
+        ctx.arc(w * 0.5, h * 0.74, 85, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Flame
+        ctx.fillStyle = '#F97316';
+        ctx.beginPath();
+        ctx.moveTo(w * 0.5 - 12, h * 0.78);
+        ctx.quadraticCurveTo(w * 0.5, h * 0.62, w * 0.5 + 12, h * 0.78);
+        ctx.fill();
+
+        // Four Children Silhouettes around Fire
+        [-52, -26, 26, 52].forEach(offset => {
+          ctx.fillStyle = '#1E293B';
+          ctx.beginPath();
+          ctx.arc(w * 0.5 + offset, h * 0.71, 7, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillRect(w * 0.5 + offset - 7, h * 0.78, 14, 16);
+        });
+      }
+
+      // Optional Watercolour Soft Overlay
+      if (isWatercolour) {
+        ctx.fillStyle = 'rgba(246, 243, 235, 0.08)';
+        for (let i = 0; i < 12; i++) {
+          ctx.beginPath();
+          ctx.arc((i * 73) % w, (i * 41) % h, 45, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Watermark Tag
+      ctx.fillStyle = 'rgba(15, 30, 54, 0.75)';
+      ctx.fillRect(12, h - 30, 185, 20);
+      ctx.fillStyle = '#F6F3EB';
+      ctx.font = 'bold 10px Inter, sans-serif';
+      ctx.fillText('AI INTERPRETATION • LAB PREVIEW', 20, h - 16);
+    }
+
+    function drawVolcano(ctx, x, y, width, height, active) {
+      ctx.fillStyle = '#78350F';
+      ctx.beginPath();
+      ctx.moveTo(x - width / 2, y);
+      ctx.lineTo(x - 6, y - height);
+      ctx.lineTo(x + 6, y - height);
+      ctx.lineTo(x + width / 2, y);
+      ctx.closePath();
+      ctx.fill();
+
+      if (active) {
+        ctx.fillStyle = 'rgba(254, 243, 199, 0.45)';
+        ctx.beginPath();
+        ctx.arc(x, y - height - 8, 6, 0, Math.PI * 2);
+        ctx.arc(x + 6, y - height - 16, 8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function syncCompareStep() {
+      const book = labBooks[currentLabBook];
+      document.getElementById('compare-excerpt-text').textContent = book.excerptEn;
+      document.getElementById('compare-ai-critique').textContent = book.aiCritique;
+
+      const look = document.getElementById('input-imagine-look').value.trim();
+      const colours = document.getElementById('input-imagine-colours').value.trim();
+      const objects = document.getElementById('input-imagine-objects').value.trim();
+      const mood = document.getElementById('input-imagine-mood').value.trim();
+
+      const notesEl = document.getElementById('compare-student-notes');
+      if (look || colours || objects || mood) {
+        notesEl.innerHTML = `
+          ${look ? `<div><strong>Образ:</strong> ${look}</div>` : ''}
+          ${colours ? `<div><strong>Цвета:</strong> ${colours}</div>` : ''}
+          ${objects ? `<div><strong>Детали:</strong> ${objects}</div>` : ''}
+          ${mood ? `<div><strong>Настроение:</strong> ${mood}</div>` : ''}
+        `;
+      } else {
+        notesEl.textContent = 'Вы ещё не заполнили заметки на Шаге 02 (Imagine). Вернитесь на Шаг 02, чтобы записать своё видение.';
+      }
+
+      const compareCanvas = document.getElementById('compare-ai-canvas');
+      const promptText = document.getElementById('input-ai-prompt').value.toLowerCase();
+      setTimeout(() => renderSceneOnCanvas(compareCanvas, currentLabBook, promptText), 50);
+    }
+
+    // =========================================================================
+    // 5. RUBRIC TABLE RENDERING (STEP 05)
+    // =========================================================================
+    function renderRubricTable() {
+      const tbody = document.getElementById('rubric-table-body');
+      tbody.innerHTML = rubricCriteria.map((c, idx) => `
+        <tr class="hover:bg-parchment-50">
+          <td class="p-3.5 font-bold text-navy-900">${c.key}</td>
+          <td class="p-3.5 text-navy-700 text-xs sm:text-sm">${c.desc}</td>
+          <td class="p-3.5 text-center">
+            <div class="inline-flex items-center gap-1">
+              ${[1, 2, 3, 4, 5].map(score => `
+                <button onclick="setRubricScore(${idx}, ${score})" class="w-7 h-7 rounded-lg text-xs font-bold transition ${
+                  rubricScores[idx] >= score
+                    ? 'bg-gold-500 text-white'
+                    : 'bg-parchment-200 text-navy-700 hover:bg-parchment-300'
+                }">${score}</button>
+              `).join('')}
+            </div>
+          </td>
+          <td class="p-3.5">
+            <input type="text" placeholder="Краткий комментарий..." class="w-full rounded-lg border border-parchment-300 px-2.5 py-1.5 text-xs focus:outline-none focus:border-navy-800" />
+          </td>
+        </tr>
+      `).join('');
+      updateRubricTotal();
+    }
+
+    function setRubricScore(index, val) {
+      rubricScores[index] = val;
+      saveLabProgress();
+      renderRubricTable();
+    }
+
+    function updateRubricTotal() {
+      const total = rubricScores.reduce((a, b) => a + b, 0);
+      document.getElementById('rubric-total-score').textContent = total;
+      const verdictEl = document.getElementById('rubric-verdict-badge');
+      if (total >= 21) {
+        verdictEl.textContent = 'Высокое визуальное совпадение (требуется проверка подтекста)';
+      } else if (total >= 14) {
+        verdictEl.textContent = 'Частичная интерпретация: ИИ уловил антураж, но упустил нюансы';
+      } else {
+        verdictEl.textContent = 'Сильное расхождение с замыслом автора';
+      }
+    }
+
+    // =========================================================================
+    // 6. INTERACTIVE BOARD GAME ("LITERARY QUEST: AUTHOR vs AI")
+    // =========================================================================
+    const gameBoardsData = {
+      rooftoppers: {
+        title: 'AUTHOR VS AI: THE ROOFTOPPERS CHALLENGE',
+        subtitle: 'BASED ON THE NOVEL BY KATHERINE RUNDELL',
+        skyTop: '#1E293B',
+        skyBottom: '#D97706',
+        accent: '#F59E0B',
+        landmarks: [
+          { x: 140, y: 865, label: 'START: CELLO CASE LAUNCH' },
+          { x: 640, y: 840, label: 'SEINE RIVER VIEWS' },
+          { x: 135, y: 745, label: 'CELLAR WORKSHOP' },
+          { x: 615, y: 635, label: 'IRONWORK BALCONY DIVE' },
+          { x: 255, y: 505, label: 'GOTHIC SPIRE BALANCING' },
+          { x: 545, y: 445, label: 'PARIS NIGHT CAMP' },
+          { x: 325, y: 295, label: 'ROOFTOP WIND LEAP' },
+          { x: 620, y: 120, label: 'FINISH: ROOFTOP ESCAPE' }
+        ],
+        ladders: [
+          { from: 3, to: 8, label: 'Ladder of Close Reading (+5)' },
+          { from: 10, to: 14, label: 'Prompt Precision Shortcut (+4)' }
+        ],
+        challenges: [
+          {
+            excerpt: '“Sophie was found floating in a cello case on the English Channel, wrapped in a red velvet lining.”',
+            question: 'ИИ сгенерировал картинку, где девочка плывёт в деревянной лодке с гитарой. Какую ключевую деталь автора упустил ИИ?',
+            options: [
+              { text: 'Футляр от виолончели (cello case) как колыбель и символ музыки', correct: true, exp: 'Верно! Футляр от виолончели — центральный символ судьбы Софи.' },
+              { text: 'Наличие спасательного вертолёта', correct: false, exp: 'Нет, действие происходит в начале XX века.' },
+              { text: 'Огромный круизный лайнер на заднем плане', correct: false, exp: 'Это не главная деталь отрывка.' }
+            ]
+          },
+          {
+            excerpt: '“Across the zinc-grey rooftops of Paris, Matteo showed Sophie how to walk silently above the streets.”',
+            question: 'Какой промпт лучше всего передаст атмосферу сцены на парижских крышах для ИИ?',
+            options: [
+              { text: 'Two children balancing on zinc-grey Paris rooftops at twilight near a Gothic spire, crescent moon, soft watercolour', correct: true, exp: 'Отлично! Указаны материал крыш, время суток, архитектура и художественный стиль.' },
+              { text: 'Kids jumping on modern skyscrapers in New York during sunny day, 3D render', correct: false, exp: 'Этот промпт полностью искажает место и эпоху романа.' },
+              { text: 'A boy and a girl walking in a Parisian cafe', correct: false, exp: 'Крышеходы живут на крышах, а не в кафе.' }
+            ]
+          },
+          {
+            excerpt: '“Near the Gothic spire under a crescent moon, the rooftoppers shared warm bread around a tiny hidden fire.”',
+            question: 'Что ИИ чаще всего «галлюцинирует» (выдумывает) при рисовании ночного лагеря на крыше?',
+            options: [
+              { text: 'Рисует гигантский лесной костёр и палатки вместо тайного маленького огня на крыше', correct: true, exp: 'Точно! ИИ склонен использовать шаблоны обычного лесного кемпинга.' },
+              { text: 'Точно воспроизводит каждую черепицу Парижа', correct: false, exp: 'Нейросети часто путают архитектурные детали без уточнения.' },
+              { text: 'Всегда рисует героев спиной', correct: false, exp: 'Это не является типичной ошибкой.' }
+            ]
+          }
+        ]
+      },
+      amazon: {
+        title: 'AUTHOR VS AI: THE AMAZON CHALLENGE',
+        subtitle: 'BASED ON THE NOVEL BY KATHERINE RUNDELL',
+        skyTop: '#064E3B',
+        skyBottom: '#0284C7',
+        accent: '#10B981',
+        landmarks: [
+          { x: 165, y: 865, label: 'START: PLANE CRASH' },
+          { x: 545, y: 865, label: 'TROPICAL DOWNPOUR' },
+          { x: 480, y: 660, label: 'THE GREEN CATHEDRAL' },
+          { x: 560, y: 455, label: 'JUNGLE NIGHT CAMP' },
+          { x: 315, y: 315, label: 'CANOPY VINE CROSSING' },
+          { x: 615, y: 120, label: 'FINISH: RESCUE & ANCIENT CITY' }
+        ],
+        ladders: [
+          { from: 4, to: 9, label: 'Vine of Metaphor (+5)' },
+          { from: 11, to: 15, label: 'Explorer’s Map (+4)' }
+        ],
+        challenges: [
+          {
+            excerpt: '“The giant rainforest trees arched high above them, meeting in a pointed vault like a Green Cathedral.”',
+            question: 'Как ИИ чаще всего ошибается при визуализации метафоры «The Green Cathedral» (Зелёный собор)?',
+            options: [
+              { text: 'Буквально строит каменную готическую церковь с витражами посреди джунглей', correct: true, exp: 'Верно! Нейросети воспринимают метафору буквально и добавляют каменную архитектуру.' },
+              { text: 'Рисует пустыню Сахара', correct: false, exp: 'Нет, слово Green сохраняет зелёный цвет.' },
+              { text: 'Не умеет рисовать деревья', correct: false, exp: 'Деревья ИИ рисует хорошо, но путается в метафоре.' }
+            ]
+          },
+          {
+            excerpt: '“Four children huddled around a small campfire under a crescent moon while tropical rain drummed on broad leaves.”',
+            question: 'Какое уточнение в промпте поможет ИИ передать эмоциональное состояние героев?',
+            options: [
+              { text: 'Four exhausted children huddling close to a warm flickering campfire in dark rainy Amazon jungle, dramatic lighting', correct: true, exp: 'Браво! Слова huddling close и flickering campfire передают уязвимость и уют.' },
+              { text: 'Happy tourists having a barbecue party in a park', correct: false, exp: 'Это полностью противоречит драматизму выживания.' },
+              { text: 'Empty jungle without people', correct: false, exp: 'В сцене важны четверо детей.' }
+            ]
+          }
+        ]
+      },
+      prince: {
+        title: 'AUTHOR VS AI: ASTEROID B-612 QUEST',
+        subtitle: 'BASED ON ANTOINE DE SAINT-EXUPÉRY',
+        skyTop: '#091324',
+        skyBottom: '#312E81',
+        accent: '#FBBF24',
+        landmarks: [
+          { x: 165, y: 865, label: 'START: ASTEROID B-612' },
+          { x: 565, y: 840, label: 'THREE TINY VOLCANOES' },
+          { x: 470, y: 650, label: 'THE PROUD ROSE' },
+          { x: 550, y: 445, label: '44 SUNSETS VIEWING' },
+          { x: 295, y: 310, label: 'THE FOX’S SECRET' },
+          { x: 615, y: 120, label: 'FINISH: STARRY RETURN' }
+        ],
+        ladders: [
+          { from: 2, to: 7, label: 'Stairway to the Stars (+5)' },
+          { from: 9, to: 14, label: 'Tamed Fox Shortcut (+5)' }
+        ],
+        challenges: [
+          {
+            excerpt: '“His planet was scarcely any larger than a house, with three volcanoes and one single rose.”',
+            question: 'Почему ИИ часто искажает смысл «Маленького принца» при генерации его планеты?',
+            options: [
+              { text: 'Рисует огромную планету с целым полем роз, теряя символику единственной и неповторимой розы', correct: true, exp: 'Именно! Для автора важна уникальность одной розы, за которую герой в ответе.' },
+              { text: 'Забывает нарисовать звёзды на небе', correct: false, exp: 'Звёзды ИИ добавляет почти всегда.' },
+              { text: 'Делает планету квадратной', correct: false, exp: 'Планеты обычно круглые.' }
+            ]
+          },
+          {
+            excerpt: '“What is essential is invisible to the eye,” said the fox.',
+            question: 'Какой главный вывод о работе ИИ иллюстрирует эта цитата Экзюпери?',
+            options: [
+              { text: 'ИИ видит только внешние пиксели и объекты, но не способен сам почувствовать невидимый духовный смысл книги', correct: true, exp: 'Прекрасный вывод, идеально подходящий для защиты проекта!' },
+              { text: 'ИИ нужно научить рисовать невидимые картинки', correct: false, exp: 'ИИ работает с визуальными паттернами.' },
+              { text: 'Книги больше не нужно читать', correct: false, exp: 'Наоборот, чтение незаменимо.' }
+            ]
+          }
+        ]
+      }
+    };
+
+    // Winding path coordinates (18 tiles from bottom-left to top-right, matching the uploaded board art!)
+    const boardTileCoords = [
+      { id: 1, x: 240, y: 810, type: 'start', icon: '1' },
+      { id: 2, x: 355, y: 810, type: 'normal', icon: '' },
+      { id: 3, x: 470, y: 810, type: 'detail', icon: '🔍' },
+      { id: 4, x: 585, y: 785, type: 'normal', icon: '' },
+      { id: 5, x: 635, y: 705, type: 'prompt', icon: '💻' },
+      { id: 6, x: 545, y: 635, type: 'normal', icon: '' },
+      { id: 7, x: 410, y: 635, type: 'detail', icon: '🔍' },
+      { id: 8, x: 270, y: 625, type: 'normal', icon: '' },
+      { id: 9, x: 195, y: 545, type: 'hallucination', icon: '🔥' },
+      { id: 10, x: 245, y: 455, type: 'prompt', icon: '💻' },
+      { id: 11, x: 375, y: 435, type: 'normal', icon: '' },
+      { id: 12, x: 515, y: 455, type: 'detail', icon: '🔍' },
+      { id: 13, x: 615, y: 390, type: 'prompt', icon: '💻' },
+      { id: 14, x: 565, y: 300, type: 'normal', icon: '' },
+      { id: 15, x: 425, y: 290, type: 'hallucination', icon: '🔥' },
+      { id: 16, x: 285, y: 275, type: 'detail', icon: '🔍' },
+      { id: 17, x: 315, y: 185, type: 'normal', icon: '→' },
+      { id: 18, x: 555, y: 165, type: 'finish', icon: '🏆' }
+    ];
+
+    let currentBoardKey = 'rooftoppers';
+    let gameState = {
+      p1Pos: 1,
+      p2Pos: 1,
+      p1Score: 0,
+      p2Score: 0,
+      turn: 1, // 1 or 2
+      isRolling: false,
+      gameOver: false
+    };
+
+    function selectGameBoard(boardKey) {
+      currentBoardKey = boardKey;
+      ['rooftoppers', 'amazon', 'prince'].forEach(k => {
+        const btn = document.getElementById(`map-btn-${k}`);
+        btn.className = k === boardKey
+          ? 'px-3.5 py-2 rounded-xl text-xs font-bold border-2 border-gold-500 bg-gold-500 text-white transition flex items-center gap-1.5'
+          : 'px-3.5 py-2 rounded-xl text-xs font-bold border border-navy-700 bg-navy-800 text-parchment-200 hover:bg-navy-700 transition flex items-center gap-1.5';
+      });
+      resetBoardGame();
+    }
+
+    function resetBoardGame() {
+      const mode = document.getElementById('game-mode-select').value;
+      gameState = {
+        p1Pos: 1,
+        p2Pos: 1,
+        p1Score: 0,
+        p2Score: 0,
+        turn: 1,
+        isRolling: false,
+        gameOver: false
+      };
+
+      document.getElementById('p1-name').textContent = mode === 'ai' ? 'Reader (Вы)' : 'Игрок 1 (Reader)';
+      document.getElementById('p2-name').textContent = mode === 'ai' ? 'AI Bot' : 'Игрок 2 (Critic)';
+      document.getElementById('dice-display').textContent = '🎲';
+      document.getElementById('btn-roll-dice').disabled = false;
+      document.getElementById('game-board-title').textContent = gameBoardsData[currentBoardKey].title;
+
+      const logEl = document.getElementById('game-log');
+      logEl.innerHTML = `<div class="p-2.5 rounded-lg bg-parchment-100 border border-parchment-200">Новая партия на карте <strong>${gameBoardsData[currentBoardKey].title}</strong> началась!</div>`;
+
+      updateGameUI();
+      renderBoardGame();
+    }
+
+    function renderBoardGame() {
+      const svg = document.getElementById('game-board-svg');
+      const board = gameBoardsData[currentBoardKey];
+
+      // Build smooth SVG path string connecting tile centers
+      let pathD = `M ${boardTileCoords[0].x} ${boardTileCoords[0].y}`;
+      for (let i = 1; i < boardTileCoords.length; i++) {
+        const prev = boardTileCoords[i - 1];
+        const curr = boardTileCoords[i];
+        const cx = (prev.x + curr.x) / 2;
+        const cy = (prev.y + curr.y) / 2;
+        pathD += ` Q ${prev.x} ${cy}, ${curr.x} ${curr.y}`;
+      }
+
+      // Decorative Background Art specific to each book
+      let bgArt = '';
+      if (currentBoardKey === 'rooftoppers') {
+        bgArt = `
+          <!-- Paris Twilight Sky & Eiffel Tower -->
+          <polygon points="480,170 435,510 525,510" fill="none" stroke="#F6F3EB" stroke-width="3" opacity="0.22"/>
+          <line x1="450" y1="360" x2="510" y2="360" stroke="#F6F3EB" stroke-width="3" opacity="0.22"/>
+          <!-- Notre Dame Towers -->
+          <rect x="640" y="250" width="38" height="160" fill="#1E293B" opacity="0.65"/>
+          <rect x="692" y="250" width="38" height="160" fill="#1E293B" opacity="0.65"/>
+          <!-- Seine River at bottom -->
+          <path d="M 0 760 Q 400 720 800 780 L 800 920 L 0 920 Z" fill="#0284C7" opacity="0.45"/>
+          <!-- Paris Night Campfire in center -->
+          <circle cx="400" cy="535" r="55" fill="#0F172A" opacity="0.75"/>
+          <polygon points="392,550 400,522 408,550" fill="#F97316"/>
+          <circle cx="385" cy="512" r="7" fill="#FDE68A"/>
+        `;
+      } else if (currentBoardKey === 'amazon') {
+        bgArt = `
+          <!-- Lush Amazon Canopy & Ancient Step Pyramid -->
+          <polygon points="610,220 660,130 730,130 780,220" fill="#A16207" opacity="0.55"/>
+          <!-- The Green Cathedral Arch -->
+          <path d="M 330 610 Q 400 470 470 610 Z" fill="#064E3B" stroke="#10B981" stroke-width="3"/>
+          <!-- Jungle Night Campfire -->
+          <circle cx="400" cy="535" r="55" fill="#022C22" opacity="0.85"/>
+          <polygon points="392,550 400,522 408,550" fill="#F97316"/>
+          <!-- Plane Crash Smoke at Bottom Left -->
+          <circle cx="150" cy="790" r="22" fill="#E2E8F0" opacity="0.35"/>
+          <circle cx="120" cy="765" r="28" fill="#E2E8F0" opacity="0.25"/>
+        `;
+      } else {
+        bgArt = `
+          <!-- Starry Cosmos & Giant Sunset Sphere -->
+          <circle cx="400" cy="520" r="140" fill="#F59E0B" opacity="0.16"/>
+          <circle cx="170" cy="240" r="45" fill="#FDE047" opacity="0.25"/>
+          <ellipse cx="640" cy="340" rx="70" ry="18" fill="none" stroke="#38BDF8" stroke-width="3" opacity="0.4"/>
+          <circle cx="640" cy="340" r="28" fill="#0284C7" opacity="0.55"/>
+        `;
+      }
+
+      // Ladders SVG
+      const laddersSvg = board.ladders.map(lad => {
+        const start = boardTileCoords[lad.from - 1];
+        const end = boardTileCoords[lad.to - 1];
+        return `
+          <g opacity="0.9">
+            <line x1="${start.x - 7}" y1="${start.y}" x2="${end.x - 7}" y2="${end.y}" stroke="#FBBF24" stroke-width="4" stroke-dasharray="6 4"/>
+            <line x1="${start.x + 7}" y1="${start.y}" x2="${end.x + 7}" y2="${end.y}" stroke="#FBBF24" stroke-width="4" stroke-dasharray="6 4"/>
+          </g>
+        `;
+      }).join('');
+
+      // Tiles SVG
+      const tilesSvg = boardTileCoords.map(t => {
+        let fill = '#EDE8DC';
+        let stroke = '#0F1E36';
+        let r = 24;
+        if (t.type === 'start') { fill = '#10B981'; stroke = '#FFFFFF'; r = 28; }
+        else if (t.type === 'finish') { fill = '#F59E0B'; stroke = '#FFFFFF'; r = 30; }
+        else if (t.type === 'detail') { fill = '#FEF3C7'; stroke = '#D97706'; }
+        else if (t.type === 'prompt') { fill = '#E0F2FE'; stroke = '#0284C7'; }
+        else if (t.type === 'hallucination') { fill = '#FFE4E6'; stroke = '#E11D48'; }
+
+        return `
+          <g>
+            <circle cx="${t.x}" cy="${t.y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="3"/>
+            <text x="${t.x}" y="${t.y - 10}" fill="#0F1E36" font-size="10" font-weight="bold" text-anchor="middle" font-family="Inter">${t.id}</text>
+            <text x="${t.x}" y="${t.y + 9}" fill="#0F1E36" font-size="14" font-weight="bold" text-anchor="middle" font-family="Inter">${t.icon}</text>
+          </g>
+        `;
+      }).join('');
+
+      // Landmarks Labels SVG
+      const landmarksSvg = board.landmarks.map(lm => `
+        <g>
+          <rect x="${lm.x - 95}" y="${lm.y - 14}" width="190" height="22" rx="8" fill="#0F1E36" opacity="0.88" stroke="#D97706" stroke-width="1"/>
+          <text x="${lm.x}" y="${lm.y + 1}" fill="#F6F3EB" font-size="10" font-weight="bold" text-anchor="middle" font-family="Inter">${lm.label}</text>
+        </g>
+      `).join('');
+
+      // Player Tokens SVG
+      const p1Coord = boardTileCoords[gameState.p1Pos - 1];
+      const p2Coord = boardTileCoords[gameState.p2Pos - 1];
+      const sameTile = gameState.p1Pos === gameState.p2Pos;
+
+      const tokensSvg = `
+        <!-- Player 1 Token (Magnifying Glass) -->
+        <g transform="translate(${p1Coord.x - (sameTile ? 14 : 0)}, ${p1Coord.y - 18})" class="${gameState.turn === 1 ? 'token-active' : ''}">
+          <circle cx="0" cy="0" r="17" fill="#D97706" stroke="#FFFFFF" stroke-width="3"/>
+          <text x="0" y="5" font-size="15" text-anchor="middle">🔍</text>
+        </g>
+        <!-- Player 2 Token (Book with Star) -->
+        <g transform="translate(${p2Coord.x + (sameTile ? 14 : 0)}, ${p2Coord.y - 18})" class="${gameState.turn === 2 ? 'token-active' : ''}">
+          <circle cx="0" cy="0" r="17" fill="#0284C7" stroke="#FFFFFF" stroke-width="3"/>
+          <text x="0" y="5" font-size="15" text-anchor="middle">📘</text>
+        </g>
+      `;
+
+      svg.innerHTML = `
+        <defs>
+          <linearGradient id="boardSky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${board.skyTop}"/>
+            <stop offset="100%" stop-color="${board.skyBottom}"/>
+          </linearGradient>
+        </defs>
+        <!-- Board Background -->
+        <rect x="0" y="0" width="800" height="920" fill="url(#boardSky)"/>
+        ${bgArt}
+        <!-- Ornate Academic Frame -->
+        <rect x="16" y="16" width="768" height="888" rx="24" fill="none" stroke="#EDE8DC" stroke-width="4" opacity="0.6"/>
+        <rect x="26" y="26" width="748" height="868" rx="18" fill="none" stroke="#D97706" stroke-width="1.5" stroke-dasharray="8 6"/>
+
+        <!-- Board Header Typography -->
+        <text x="400" y="75" fill="#FDE68A" font-size="28" font-weight="bold" text-anchor="middle" font-family="Playfair Display, serif">${board.title}</text>
+        <text x="400" y="100" fill="#F6F3EB" font-size="13" font-weight="bold" letter-spacing="2" text-anchor="middle" font-family="Inter">${board.subtitle}</text>
+
+        <!-- Winding Parchment Track -->
+        <path d="${pathD}" fill="none" stroke="#0F1E36" stroke-width="58" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="${pathD}" fill="none" stroke="#DFD7C5" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- Ladders -->
+        ${laddersSvg}
+
+        <!-- Numbered Tiles -->
+        ${tilesSvg}
+
+        <!-- Story Landmark Badges -->
+        ${landmarksSvg}
+
+        <!-- Player Tokens -->
+        ${tokensSvg}
+      `;
+    }
+
+    function handleRollDice() {
+      if (gameState.isRolling || gameState.gameOver) return;
+      gameState.isRolling = true;
+
+      const diceEl = document.getElementById('dice-display');
+      const rollBtn = document.getElementById('btn-roll-dice');
+      rollBtn.disabled = true;
+      diceEl.classList.add('dice-rolling');
+
+      const roll = Math.floor(Math.random() * 4) + 1; // 1–4 steps for rich encounter pacing
+
+      setTimeout(() => {
+        diceEl.classList.remove('dice-rolling');
+        diceEl.textContent = roll;
+        moveCurrentPlayer(roll);
+      }, 600);
+    }
+
+    function moveCurrentPlayer(steps) {
+      const isP1 = gameState.turn === 1;
+      const playerName = isP1 ? document.getElementById('p1-name').textContent : document.getElementById('p2-name').textContent;
+      let currentPos = isP1 ? gameState.p1Pos : gameState.p2Pos;
+      let nextPos = Math.min(18, currentPos + steps);
+
+      if (isP1) gameState.p1Pos = nextPos;
+      else gameState.p2Pos = nextPos;
+
+      addGameLog(`🎲 <strong>${playerName}</strong> выбросил(а) <strong>${steps}</strong> и переходит на клетку <strong>#${nextPos}</strong>.`);
+      renderBoardGame();
+      updateGameUI();
+
+      // Check Finish
+      if (nextPos >= 18) {
+        gameState.gameOver = true;
+        gameState.isRolling = false;
+        addGameLog(`🏆 <strong>${playerName}</strong> достигает финиша и побеждает в литературном квесте!`);
+        showToast('🏆', `Победа! ${playerName} завершил(а) путешествие по книге!`);
+        return;
+      }
+
+      const board = gameBoardsData[currentBoardKey];
+      // Check Ladders
+      const ladder = board.ladders.find(l => l.from === nextPos);
+      if (ladder) {
+        setTimeout(() => {
+          if (isP1) {
+            gameState.p1Pos = ladder.to;
+            gameState.p1Score += 15;
+          } else {
+            gameState.p2Pos = ladder.to;
+            gameState.p2Score += 15;
+          }
+          addGameLog(`🪜 <strong>${ladder.label}!</strong> Подъём на клетку <strong>#${ladder.to}</strong> (+15 очков).`);
+          renderBoardGame();
+          updateGameUI();
+          finishTurn();
+        }, 650);
+        return;
+      }
+
+      // Check Special Tiles
+      const tile = boardTileCoords[nextPos - 1];
+      if (tile.type === 'hallucination') {
+        setTimeout(() => {
+          const backPos = Math.max(1, nextPos - 2);
+          if (isP1) gameState.p1Pos = backPos;
+          else gameState.p2Pos = backPos;
+          addGameLog(`🔥 <strong>Галлюцинация ИИ!</strong> Нейросеть исказила текст автора — откат на клетку <strong>#${backPos}</strong>.`);
+          renderBoardGame();
+          updateGameUI();
+          finishTurn();
+        }, 650);
+        return;
+      }
+
+      if (tile.type === 'detail' || tile.type === 'prompt') {
+        const mode = document.getElementById('game-mode-select').value;
+        if (!isP1 && mode === 'ai') {
+          // AI Bot auto-resolves
+          setTimeout(() => {
+            gameState.p2Score += 10;
+            addGameLog(`🤖 <strong>AI Bot</strong> выполнил анализ промпта (+10 очков).`);
+            updateGameUI();
+            finishTurn();
+          }, 700);
+        } else {
+          openChallengeModal(tile);
+        }
+        return;
+      }
+
+      finishTurn();
+    }
+
+    function openChallengeModal(tile) {
+      const board = gameBoardsData[currentBoardKey];
+      const challenge = board.challenges[Math.floor(Math.random() * board.challenges.length)];
+
+      document.getElementById('modal-icon').textContent = tile.type === 'detail' ? '🔍' : '💻';
+      document.getElementById('modal-badge').textContent = tile.type === 'detail' ? 'Read & Spot Detail' : 'AI Prompt Duel';
+      document.getElementById('modal-title').textContent = tile.type === 'detail' ? 'Проверка внимательности читателя' : 'Дуэль промптов: Author vs. AI';
+      document.getElementById('modal-tile-num').textContent = `Tile #${tile.id}`;
+      document.getElementById('modal-excerpt-box').textContent = challenge.excerpt;
+      document.getElementById('modal-question').textContent = challenge.question;
+
+      const feedbackEl = document.getElementById('modal-feedback');
+      feedbackEl.classList.add('hidden');
+      document.getElementById('modal-continue-btn').classList.add('hidden');
+
+      const optionsEl = document.getElementById('modal-options');
+      optionsEl.innerHTML = challenge.options.map((opt, idx) => `
+        <button onclick="answerChallenge(${idx}, ${opt.correct}, '${opt.exp.replace(/'/g, "\\'")}')" class="challenge-opt-btn w-full text-left p-3.5 rounded-xl border border-parchment-300 bg-parchment-50 hover:bg-navy-100 text-sm font-medium text-navy-900 transition">
+          ${opt.text}
+        </button>
+      `).join('');
+
+      document.getElementById('challenge-modal').classList.remove('hidden');
+    }
+
+    function answerChallenge(idx, isCorrect, explanation) {
+      document.querySelectorAll('.challenge-opt-btn').forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === idx) {
+          btn.className = isCorrect
+            ? 'w-full text-left p-3.5 rounded-xl border-2 border-emerald-600 bg-emerald-50 text-sm font-bold text-emerald-950'
+            : 'w-full text-left p-3.5 rounded-xl border-2 border-rose-600 bg-rose-50 text-sm font-bold text-rose-950';
+        }
+      });
+
+      const isP1 = gameState.turn === 1;
+      const playerName = isP1 ? document.getElementById('p1-name').textContent : document.getElementById('p2-name').textContent;
+
+      if (isCorrect) {
+        if (isP1) gameState.p1Score += 20;
+        else gameState.p2Score += 20;
+        addGameLog(`✨ <strong>${playerName}</strong> блестяще справился с заданием! (+20 очков)`);
+      } else {
+        addGameLog(`📖 <strong>${playerName}</strong> ошибся в деталях текста, но получил полезный опыт.`);
+      }
+
+      const feedbackEl = document.getElementById('modal-feedback');
+      feedbackEl.className = isCorrect
+        ? 'rounded-xl p-4 text-sm border border-emerald-300 bg-emerald-50 text-emerald-900'
+        : 'rounded-xl p-4 text-sm border border-amber-300 bg-amber-50 text-amber-900';
+      feedbackEl.innerHTML = `<strong>${isCorrect ? 'Верно! (+20 очков)' : 'Обратите внимание:'}</strong> ${explanation}`;
+      feedbackEl.classList.remove('hidden');
+
+      document.getElementById('modal-continue-btn').classList.remove('hidden');
+      updateGameUI();
+    }
+
+    function closeChallengeModal() {
+      document.getElementById('challenge-modal').classList.add('hidden');
+      finishTurn();
+    }
+
+    function finishTurn() {
+      if (gameState.gameOver) return;
+      gameState.turn = gameState.turn === 1 ? 2 : 1;
+      gameState.isRolling = false;
+      updateGameUI();
+
+      const mode = document.getElementById('game-mode-select').value;
+      if (gameState.turn === 2 && mode === 'ai') {
+        document.getElementById('btn-roll-dice').disabled = true;
+        document.getElementById('turn-instruction').textContent = 'AI Bot анализирует карту и бросает кубик...';
+        setTimeout(() => {
+          handleRollDice();
+        }, 900);
+      } else {
+        document.getElementById('btn-roll-dice').disabled = false;
+      }
+    }
+
+    function updateGameUI() {
+      document.getElementById('p1-pos').textContent = gameState.p1Pos;
+      document.getElementById('p2-pos').textContent = gameState.p2Pos;
+      document.getElementById('p1-score').textContent = gameState.p1Score;
+      document.getElementById('p2-score').textContent = gameState.p2Score;
+
+      const p1Card = document.getElementById('p1-card');
+      const p2Card = document.getElementById('p2-card');
+      const p1Badge = document.getElementById('p1-turn-badge');
+      const p2Badge = document.getElementById('p2-turn-badge');
+
+      if (gameState.turn === 1) {
+        p1Card.className = 'p-3.5 rounded-xl border-2 border-gold-500 bg-amber-50/40 transition flex items-center justify-between';
+        p2Card.className = 'p-3.5 rounded-xl border border-parchment-300 bg-white transition flex items-center justify-between opacity-75';
+        p1Badge.classList.remove('hidden');
+        p2Badge.classList.add('hidden');
+        document.getElementById('turn-instruction').textContent = `Ход: ${document.getElementById('p1-name').textContent}`;
+      } else {
+        p2Card.className = 'p-3.5 rounded-xl border-2 border-sky-600 bg-sky-50/40 transition flex items-center justify-between';
+        p1Card.className = 'p-3.5 rounded-xl border border-parchment-300 bg-white transition flex items-center justify-between opacity-75';
+        p2Badge.classList.remove('hidden');
+        p1Badge.classList.add('hidden');
+        document.getElementById('turn-instruction').textContent = `Ход: ${document.getElementById('p2-name').textContent}`;
+      }
+    }
+
+    function addGameLog(htmlText) {
+      const logEl = document.getElementById('game-log');
+      const item = document.createElement('div');
+      item.className = 'p-2.5 rounded-lg bg-parchment-50 border border-parchment-200 fade-in';
+      item.innerHTML = htmlText;
+      logEl.prepend(item);
+    }
+
+    // =========================================================================
+    // 7. UTILITY: TOAST MESSAGE & INITIALIZATION
+    // =========================================================================
+    let toastTimer = null;
+    function showToast(icon, msg) {
+      const banner = document.getElementById('toast-banner');
+      document.getElementById('toast-icon').textContent = icon;
+      document.getElementById('toast-message').textContent = msg;
+      banner.classList.remove('hidden');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        banner.classList.add('hidden');
+      }, 3500);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedLang = localStorage.getItem('author_vs_ai_lang') || 'ru';
+      setLanguage(savedLang);
+
+      const savedBook = localStorage.getItem('author_vs_ai_book') || 'little_prince';
+      currentLabBook = savedBook;
+
+      selectGameBoard('rooftoppers');
+      switchMainView('home');
+    });
+  </script>
+</body>
+</html>
